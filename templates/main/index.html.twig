@@ -4,6 +4,13 @@
 
 {% block body %}
 
+    <div class="row">
+        {% for flash in app.flashes('success') %}
+            <div class="alert alert-success" role="alert">
+                {{ flash }}
+            </div>
+        {% endfor %}
+    </div>
     <form action="">
         <textarea class="textareamce"></textarea>
     </form>
