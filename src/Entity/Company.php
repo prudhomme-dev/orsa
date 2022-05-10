@@ -52,9 +52,13 @@ class Company
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Contact::class)]
     private $contacts;
 
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: ApplicationNote::class)]
+    private $applicationNotes;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
+        $this->applicationNotes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -218,6 +222,36 @@ class Company
             // set the owning side to null (unless already changed)
             if ($contact->getCompany() === $this) {
                 $contact->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ApplicationNote>
+     */
+    public function getApplicationNotes(): Collection
+    {
+        return $this->applicationNotes;
+    }
+
+    public function addApplicationNote(ApplicationNote $applicationNote): self
+    {
+        if (!$this->applicationNotes->contains($applicationNote)) {
+            $this->applicationNotes[] = $applicationNote;
+            $applicationNote->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApplicationNote(ApplicationNote $applicationNote): self
+    {
+        if ($this->applicationNotes->removeElement($applicationNote)) {
+            // set the owning side to null (unless already changed)
+            if ($applicationNote->getCompany() === $this) {
+                $applicationNote->setCompany(null);
             }
         }
 
