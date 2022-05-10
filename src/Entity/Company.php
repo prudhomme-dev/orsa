@@ -25,7 +25,10 @@ class Company
     private $addressTwo;
 
     #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private $adresseThree;
+    private $addressThree;
+
+    #[ORM\ManyToOne(targetEntity: City::class)]
+    private $city;
 
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $phoneCompany;
@@ -54,6 +57,7 @@ class Company
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: ApplicationNote::class)]
     private $applicationNotes;
+
 
     public function __construct()
     {
@@ -102,14 +106,14 @@ class Company
         return $this;
     }
 
-    public function getAdresseThree(): ?string
+    public function getAddressThree(): ?string
     {
-        return $this->adresseThree;
+        return $this->addressThree;
     }
 
-    public function setAdresseThree(?string $adresseThree): self
+    public function setAddressThree(?string $addressThree): self
     {
-        $this->adresseThree = $adresseThree;
+        $this->addressThree = $addressThree;
 
         return $this;
     }
@@ -254,6 +258,18 @@ class Company
                 $applicationNote->setCompany(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCity(): ?City
+    {
+        return $this->city;
+    }
+
+    public function setCity(?City $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }
