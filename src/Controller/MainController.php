@@ -9,6 +9,8 @@ use App\Form\ContactUsFormType;
 use App\Repository\CityRepository;
 use App\Repository\CivilityRepository;
 use App\Repository\StatusRepository;
+use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -25,13 +27,17 @@ use Symfony\UX\Chartjs\Model\Chart;
 class MainController extends AbstractController
 {
     #[Route('/', name: 'app_main')]
-    public function index(ChartBuilderInterface $chartBuilder): Response
+    public function index(ChartBuilderInterface $chartBuilder, UserRepository $userRepository): Response
     {
 
 
         if ($this->getUser()) {
+            // Mise à jour de la date de dernière connexion
+            $user = $this->getUser()->setLastLoginDate(new DateTime());
+            $userRepository->add($this->getUser(), true);
             if ($this->isGranted('CANDIDATE')) ;
             {
+
 
             }
 

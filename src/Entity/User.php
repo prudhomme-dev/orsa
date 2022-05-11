@@ -209,9 +209,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->lastLoginDate;
     }
 
-    public function setLastLoginDate(): self
+    public function setLastLoginDate(\DateTimeInterface $updatedate): self
     {
-        $this->lastLoginDate = new DateTime();
+        $this->lastLoginDate = $updatedate;
         return $this;
     }
 
