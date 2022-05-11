@@ -1,0 +1,108 @@
+:root {
+    --bs-primary-rgb: 29, 158, 198 !important;
+    --bs-primary: #1D9EC6 !important;
+    --bs-body-font-family: 'Russo One', sans-serif !important;
+    --bs-body-font-size: 16px;
+    --bs-body-color: white !important;
+    --background-content-color: #40D2FF;
+    --background-link-btn-title: #C5D31D;
+    --background-input: #09607A;
+
+}
+
+.navbar-text {
+    color: var(--background-link-btn-title) !important;
+}
+
+.title {
+    font-size: 22px !important;
+}
+
+.copyright {
+    font-size: 10px !important;
+    color: white !important;
+}
+
+.nav-link {
+    color: var(--background-link-btn-title) !important;
+}
+
+.nav-link::before {
+    content: "|";
+    padding-right: 10px;
+}
+
+
+.nav-link:hover {
+    color: var(--bs-body-color) !important;
+}
+
+.maximarge {
+    margin-bottom: 130px;
+}
+
+.align-center {
+    margin: 0 auto;
+}
+
+a {
+    color: var(--background-link-btn-title);
+}
+
+a:hover {
+    color: var(--background-input);
+}
+
+.btn {
+    background-color: var(--background-link-btn-title) !important;
+    border: var(--background-link-btn-title) 1px solid;
+    border-radius: 30px;
+}
+
+.btn:hover {
+    background-color: var(--bs-primary) !important;
+}
+
+.form-control, .form-control:focus {
+    background-color: var(--background-input);
+    color: var(--background-link-btn-title);
+}
+
+
+.form-control:focus {
+    border-color: transparent !important;
+    outline: 0;
+    box-shadow: none;
+}
+
+.form-check-input {
+    background-color: var(--background-link-btn-title);
+    border: none;
+}
+
+.form-check-input:focus {
+    border-color: transparent;
+    outline: 0;
+    box-shadow: none;
+}
+
+.form-switch .form-check-input:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%2309607A'/%3e%3c/svg%3e");
+}
+
+.form-select {
+    color: var(--bs-body-color);
+    background-color: var(--background-input);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 16px 12px;
+    border: 1px solid #ced4da;
+}
+
+.title-image {
+    border-radius: 50%;
+    width: 90%;
+    object-fit: cover;
+    min-width: 90%;
+}

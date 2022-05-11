@@ -1,21 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Créer son compte{% endblock %}
 
 {% block body %}
+
     {% for flash_error in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
+    <h2 class="row justify-content-center p-2">Je créé mon compte sur MonStage.App</h2>
 
-    <h1>Register</h1>
+    <div class="row justify-content-around">
+        <div class="col-12 col-md-6 align-self-center">
+            <img src="{{ asset('./assets/img/register-img.jpg') }}" class="img-fluid title-image" alt="S'enregistrer">
+        </div>
+        <div class="col-12 col-md-6 align-self-center">
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+            {{ form_start(registrationForm) }}
+            <div class="row">
+                <div class="col-6"> {{ form_row(registrationForm.civility) }}</div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-6">{{ form_row(registrationForm.firstnameUser) }}</div>
+                <div class="col-6">{{ form_row(registrationForm.lastnameUser) }}</div>
+            </div>
+            <div class="row">
+                <div class="col"> {{ form_row(registrationForm.email) }}</div>
+            </div>
+            <div class="row">
+                <div class="col"> {{ form_row(registrationForm.plainPassword) }}</div>
+            </div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+            <div class="row justify-content-center">
+                <div class="col">{{ form_row(registrationForm.agreeTerms) }}</div>
+            </div>
+            <div class="row justify-content-center">
+                <button type="submit" class="btn btn-success col-5">S'enregistrer</button>
+            </div>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
 {% endblock %}

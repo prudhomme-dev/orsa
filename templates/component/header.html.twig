@@ -1,0 +1,55 @@
+<header class="sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <div class="container-fluid">
+
+            <a class="navbar-brand" href="{{ path('app_main') }}"><img src="{{ asset('./assets/img/logo.png') }}"
+                                                                       alt=""></a>
+            <h1 class="navbar-text title text-center">Gestion de vos candidatures</h1>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                <ul class="navbar-nav align-center text-center">
+
+                    {% if is_granted("ROLE_CANDIDATE") %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Candidat OK</a>
+                        </li>
+                    {% endif %}
+
+                    {% if is_granted("ROLE_ADMIN") %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Accueil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Utilisateurs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Configuration</a>
+                        </li>
+
+                    {% endif %}
+                    {% if app.user %}
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_logout') }}">Se Déconnecter</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_register') }}">S'inscrire</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_login') }}">Se Connecter</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
