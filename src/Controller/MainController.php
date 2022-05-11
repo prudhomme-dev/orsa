@@ -5,14 +5,20 @@ namespace App\Controller;
 use App\Entity\City;
 use App\Entity\Civility;
 use App\Entity\Status;
+use App\Form\ContactUsFormType;
 use App\Repository\CityRepository;
 use App\Repository\CivilityRepository;
 use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
@@ -59,6 +65,42 @@ class MainController extends AbstractController
         return $this->render('main/index.html.twig', [
             'controller_name' => 'MainController', 'chart' => $chart
         ]);
+    }
+
+    #[Route('/legal', name: 'app_legal')]
+    public function legal(): Response
+    {
+        return $this->render("main/legal.html.twig");
+    }
+
+    #[Route('/terms', name: 'app_terms')]
+    public function terms(): Response
+    {
+        return $this->render("main/terms.html.twig");
+    }
+
+    #[Route('/contactus', name: 'app_contactus', methods: ['GET', 'POST'])]
+    public function contact(Request $request, MailerInterface $mailer, TranslatorInterface $translator, CivilityRepository $civilityRepository): Response
+    {
+        $form = $this->createForm(ContactUsFormType::class);
+        $form->handleRequest($request);
+        dump($form->all());
+        if ($form->isSubmitted() && $form->isValid()) {
+            $civility = $civilityRepository->find($form->get('Civility')->getData());
+            dump($civility->getNameCivility());
+//            $email = (new TemplatedEmail())
+//                ->from(new Address('noreply@monstage.app', 'MonStage.APP'))
+//                ->to($form->get("Email")->getData())
+//                ->subject('Your password reset request')
+//                ->htmlTemplate('reset_password/email.html.twig')
+//                ->context([]);
+//            $mailer->send($email);
+
+
+        }
+
+
+        return $this->render("main/contact.html.twig", ['requestForm' => $form->createView()]);
     }
 
     #[IsGranted('ROLE_ADMIN')]

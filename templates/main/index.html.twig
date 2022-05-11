@@ -1,6 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}MonStage.APP{% endblock %}
+
+    {% block title %}
+        {% if is_granted("ROLE_ADMIN") %}
+            Dashboard Administrateur - {{ name_site }}
+        {% elseif is_granted("ROLE_CANDIDATE") %}
+            Dashboard Candidat - {{ name_site }}
+        {% elseif not app.user %}
+            Gérez vos candidatures - {{ name_site }}
+        {% endif %}
+    {% endblock %}
+
 
 {% block body %}
     {% if is_granted("ROLE_CANDIDATE") %}
@@ -21,6 +31,10 @@
     {% endif %}
     {% if app.user %}
         <p>Utilisateur connecté</p>
+        {% if is_granted("ROLE_ADMIN") %}
+            <p>Administrateur Dashboard</p>
+        {% endif %}
+
 
     {% else %}
 

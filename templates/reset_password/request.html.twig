@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ env }} - Réinitialisation de mot de passe{% endblock %}
+{% block title %}Réinitialisation de mot de passe - {{ name_site }}{% endblock %}
 
 {% block body %}
     {% for flash_error in app.flashes('reset_password_error') %}

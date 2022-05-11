@@ -106,3 +106,11 @@ a:hover {
     object-fit: cover;
     min-width: 90%;
 }
+
+.legal {
+    margin: 0;
+}
+
+.titlelegal {
+    color: var(--background-input) !important;
+}
