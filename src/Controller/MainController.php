@@ -16,12 +16,10 @@ use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
@@ -32,8 +30,7 @@ class MainController extends AbstractController
     #[Route('/', name: 'app_main')]
     public function index(ChartBuilderInterface $chartBuilder, UserRepository $userRepository): Response
     {
-
-
+// TODO Revoir la gestion des toasts
         if ($this->getUser()) {
             // Mise à jour de la date de dernière connexion
             $user = $this->getUser()->setLastLoginDate(new DateTime());
@@ -85,12 +82,14 @@ class MainController extends AbstractController
     #[Route('/terms', name: 'app_terms')]
     public function terms(): Response
     {
+        // TODO Mettre en place les CGU
         return $this->render("main/terms.html.twig");
     }
 
     #[Route('/contactus', name: 'app_contactus', methods: ['GET', 'POST'])]
     public function contact(Request $request, MailerInterface $mailer, TranslatorInterface $translator, CivilityRepository $civilityRepository, SettingRepository $settingRepository): Response
     {
+        // TODO Mettre en forme le formulaire sur le Twig avec Bootstrap
         $form = $this->createForm(ContactUsFormType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

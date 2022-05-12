@@ -7,6 +7,7 @@ use Symfony\Bridge\Twig\Mime\BodyRenderer;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
@@ -38,7 +39,7 @@ class Mail
                 ->subject($subject)
                 ->htmlTemplate($template)
                 ->context($context);
-
+// TODO Trouver solution sur les E-Mail de templates
             $loader = new FilesystemLoader('../templates/');
             $twigEnv = new Environment($loader);
             $twigBodyRenderer = new BodyRenderer($twigEnv);

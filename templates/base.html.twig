@@ -19,11 +19,15 @@
     {% endblock %}
 </head>
 <body>
-
+{{ include('component/toast.html.twig') }}
 {% include 'component/header.html.twig' %}
 <div class="container maximarge mt-3">
-    {% block body %}{% endblock %}
+
+    {% block body %}
+
+    {% endblock %}
 </div>
+
 
 {% include 'component/footer.html.twig' %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
