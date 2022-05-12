@@ -6,9 +6,11 @@
 
     <h2 class="row justify-content-center p-2">Contactez-nous</h2>
 
-    <h3>Formulaire à créer</h3>
+    {% for flash_error in app.flashes('mail_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
     {{ form_start(requestForm) }}
-    
+
     {{ form_row(requestForm.Civility) }}
     {{ form_row(requestForm.FirstName) }}
     {{ form_row(requestForm.LastName) }}

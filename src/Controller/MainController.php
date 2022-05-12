@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\City;
 use App\Entity\Civility;
+use App\Entity\Setting;
 use App\Entity\Status;
 use App\Form\ContactUsFormType;
+use App\Mail\Mail;
 use App\Repository\CityRepository;
 use App\Repository\CivilityRepository;
+use App\Repository\SettingRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use DateTime;
@@ -86,39 +89,37 @@ class MainController extends AbstractController
     }
 
     #[Route('/contactus', name: 'app_contactus', methods: ['GET', 'POST'])]
-    public function contact(Request $request, MailerInterface $mailer, TranslatorInterface $translator, CivilityRepository $civilityRepository): Response
+    public function contact(Request $request, MailerInterface $mailer, TranslatorInterface $translator, CivilityRepository $civilityRepository, SettingRepository $settingRepository): Response
     {
         $form = $this->createForm(ContactUsFormType::class);
         $form->handleRequest($request);
-        dump($form->all());
         if ($form->isSubmitted() && $form->isValid()) {
+            $setting = $settingRepository->findBykey("smtp");
+
             $civility = $civilityRepository->find($form->get('Civility')->getData());
-            dump($civility->getNameCivility());
-//            $email = (new TemplatedEmail())
-//                ->from(new Address('noreply@monstage.app', 'MonStage.APP'))
-//                ->to($form->get("Email")->getData())
-//                ->subject('Your password reset request')
-//                ->htmlTemplate('reset_password/email.html.twig')
-//                ->context([]);
-//            $mailer->send($email);
+            if (Mail::emailTransport($setting,
+                [$setting["smtp_from"], $setting["smtp_from_name"]], "Formulaire de Contact", "", "main/contact_email.html.twig", ["form" => $form->all(), "Civility" => $civility], [$form->get("Email")->getData(), $form->get("LastName")->getData()])) {
+                $this->addFlash("mail_send", "Votre message a été envoyé correctement");
+                return $this->render("main/contact-send.html.twig");
+            } else {
+                $this->addFlash("mail_error", "Problème d'envoi du message");
+            }
 
 
         }
-
 
         return $this->render("main/contact.html.twig", ['requestForm' => $form->createView()]);
     }
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/init', name: 'app_init')]
-    public function initApp(CityRepository $cityRepository, EntityManagerInterface $manager, CivilityRepository $civilityRepository, StatusRepository $statusRepository): Response
+    public function initApp(CityRepository $cityRepository, EntityManagerInterface $manager, CivilityRepository $civilityRepository, StatusRepository $statusRepository, SettingRepository $settingRepository): Response
     {
 
         // Ajout des codes postaux
         $cities = $cityRepository->findAll();
         // dd(count($cities));
         if (count($cities) === 0) {
-            dd("OK");
             $zipCode = null;
             $filejson = file_get_contents("https://datanova.laposte.fr/explore/dataset/laposte_hexasmal/download?format=json&amp;timezone=Europe/Berlin&amp;use_labels_for_header=false");
             if ($filejson) {
@@ -176,6 +177,20 @@ class MainController extends AbstractController
             }
             $manager->flush();
             $this->addFlash("success", "Statuts ajoutées");
+        }
+
+        // Ajout des Settings
+        $setting = $settingRepository->findAll();
+        if (count($setting) === 0) {
+            $settingArray = ["smtp_user", "smtp_pass", "smtp_server", "smtp_port", "smtp_from", "smtp_from_name"];
+
+            foreach ($settingArray as $settingOne) {
+                $settingInt = new Setting();
+                $settingInt->setKeySetting($settingOne);
+                $manager->persist($settingInt);
+            }
+            $manager->flush();
+            $this->addFlash("success", "Settings ajoutés");
         }
 
         return $this->redirectToRoute("app_main");

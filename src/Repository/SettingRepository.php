@@ -39,20 +39,36 @@ class SettingRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Setting[] Returns an array of Setting objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return $result[] Returns an associated array of Setting value
+     */
+    public function findBykey($value): array
+    {
+        $extract = $this->createQueryBuilder('s')
+            ->andWhere('s.keySetting LIKE :val')
+            ->setParameter('val', $value . "_%")
+            ->orderBy('s.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+        $result = [];
+        foreach ($extract as $data) {
+            $result[$data->getKeySetting()] = $data->getValue();
+        }
+        return $result;
+    }
+
+    /**
+     * @return $result[] Returns an associated array of Setting value
+     */
+    public function findBykeyObj($value): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.keySetting LIKE :val')
+            ->setParameter('val', $value . "_%")
+            ->orderBy('s.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
 //    public function findOneBySomeField($value): ?Setting
 //    {

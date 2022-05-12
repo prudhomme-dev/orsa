@@ -1,0 +1,7 @@
+<h1>Formulaire de contact</h1>
+<p>Contact : {{ Civility }} {{ form.FirstName.viewData }} {{ form.LastName.viewData }}</p>
+
+<p>Adresse E-Mail : {{ form.Email.viewData }}</p>
+<p>Téléphone : {{ form.PhoneNumber.viewData }}</p>
+<p>Message :</p>
+<div>{{ form.Message.viewData|raw }}</div>

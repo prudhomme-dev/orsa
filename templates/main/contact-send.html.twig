@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Message envoyé - {{ name_site }}{% endblock %}
+
+{% block body %}
+    
+    <h3 class="row justify-content-center p-2">Message envoyé</h3>
+
+    <div class="row justify-content-around">
+        <div class="col-12 col-md-6 align-self-center">
+            <img src="{{ asset('./assets/img/register-send-img.jpg') }}" class="img-fluid title-image"
+                 alt="Un E-Mail vous attend pour valider votre compte">
+        </div>
+        <div class="col-12 col-md-6 align-self-center">
+
+            <p>Votre message a été correctement envoyé. Nous vous répondrons par E-Mail dans les plus brefs délais.
+            </p>
+        </div>
+    </div>
+{% endblock %}
