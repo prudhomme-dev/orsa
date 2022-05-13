@@ -2,10 +2,22 @@
      data-original-class="toast-container position-absolute p-3">
 
     {% for flash in app.flashes('messages') %}
-        test
         <div class="toast fade show bg-primary" aria-live="assertive" aria-atomic="true">
             <div class="toast-header bg-primary">
                 <strong class="me-auto ">Confirmation</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                {{ flash }}
+            </div>
+        </div>
+
+    {% endfor %}
+
+    {% for flash in app.flashes('success') %}
+        <div class="toast fade show bg-success" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success">
+                <strong class="me-auto ">Succès</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
             </div>
             <div class="toast-body">

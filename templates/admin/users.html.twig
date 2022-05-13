@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Listes des Utilisateurs - {{ name_site }}{% endblock %}
+
+{% block body %}
+
+    <h2 class="row justify-content-center p-2">Liste des utilisateurs</h2>
+    <div class="row justify-content-end">
+        <div class="form-floating mb-3 col-4">
+            <input type="search" class="form-control light-table-filter col-3" id="search" data-table="table-hover"
+                   placeholder="Recherche">
+            {#            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com"> #}
+            <label for="search p-1">Rechercher</label>
+        </div>
+
+    </div>
+    <div class="table-responsive-lg">
+        <table class="table table-striped table-hover mt-1">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Prénom</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Adresse E-Mail</th>
+                <th scope="col">Roles</th>
+                <th scope="col">Date de création</th>
+                <th scope="col">Statut</th>
+                <th scope="col">Dernière connexion</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for userlist in users %}
+                {% if userlist.id != app.user.id %}
+                    <tr>
+                {% else %}
+                    <tr class="table-danger">
+                {% endif %}
+                <th scope="row">{{ userlist.id }}</th>
+                <td>{{ userlist.firstnameUser }}</td>
+                <td>{{ userlist.lastnameUser }}</td>
+                <td>{{ userlist.email }}</td>
+                <td>
+                    {% for role in userlist.roles %}
+                        {% if role == "ROLE_ADMIN" %}
+                            Admin
+                        {% elseif role=="ROLE_CANDIDATE" %}
+                            Candidat
+                        {% else %}
+                            Inconnu
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ userlist.createdDate|date("d/m/Y h:m:i") }}</td>
+                <td>
+                    {% if userlist.active == 0 %}
+                        Bloqué
+                    {% else %}
+                        Actif
+                    {% endif %}
+
+                    {% if userlist.active == 1 and userlist.verified == 0 %}
+                        - Non vérifié
+                    {% endif %}
+                </td>
+                <td>
+                    {% if userlist.lastLoginDate %}
+                        {{ userlist.lastLoginDate|date("d/m/Y h:m:i") }}
+                    {% endif %}
+                </td>
+                <td>
+
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            Action
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item"
+                                   href="{{ path('app_admin_user_edit', {'id': userlist.id}) }}">Editer</a></li>
+                            {% if userlist.id != app.user.id %}
+                                {% if userlist.active and not userlist.verified %}
+                                    <li><a class="dropdown-item link-warning"
+                                           href="{{ path('app_admin_user_block', {'id': userlist.id}) }}">Activer</a>
+                                    </li>
+                                {% endif %}
+                                {% if userlist.active == 0 %}
+                                    <li><a class="dropdown-item link-success"
+                                           href="{{ path('app_admin_user_block', {'id': userlist.id}) }}">Débloquer</a>
+                                    </li>
+
+                                {% else %}
+                                    <li><a class="dropdown-item link-danger"
+                                           href="{{ path('app_admin_user_block', {'id': userlist.id}) }}">Bloquer</a>
+                                    </li>
+                                {% endif %}
+                                <li><a class="dropdown-item link-danger" href="#">Supprimer</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}

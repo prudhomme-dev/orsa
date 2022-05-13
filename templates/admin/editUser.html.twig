@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editer un utilisateur - {{ name_site }}{% endblock %}
+
+{% block body %}
+    <h2 class="row justify-content-center p-2">Utilisateur
+        : {{ userEdit.firstnameUser }} {{ userEdit.lastnameUser }}</h2>
+
+    {{ form_start(requestForm) }}
+
+
+    <div class="form-floating">
+        <input type="text" id="admin_edit_user_form_zipCode" name="admin_edit_user_form[zipCode]"
+               required="required" autocomplete="zipcode" placeholder="Code Postal"
+               class="form-control" onblur="getCitiesFromZipCode(this.value, 'admin_edit_user_cityId');">
+        <label for="admin_edit_user_form_zipCode" class="form-label required">Code
+            Postal</label></div>
+    <select id="admin_edit_user_cityId" onblur="" name="cityId" required="required"
+            class="form-select">
+    </select>
+
+
+    <button class="btn btn-success">Envoyer</button>
+    {{ form_end(requestForm) }}
+
+
+{% endblock %}

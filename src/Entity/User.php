@@ -376,4 +376,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function isAuthorized(): bool
+    {
+        if (!$this->active || !$this->isVerified) {
+            return false;
+        }
+        return true;
+    }
 }

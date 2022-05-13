@@ -13,3 +13,7 @@ import './bootstrap';
 
 // TinyMCE
 import './textareamce';
+
+// Tables
+import './tables';
+

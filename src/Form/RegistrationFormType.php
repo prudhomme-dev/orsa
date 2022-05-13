@@ -68,7 +68,7 @@ class RegistrationFormType extends AbstractType
                         'class' => 'form-floating col-8']],
             ])
             ->add('civility', EntityType::class, ["class" => Civility::class,
-                "label" => "Civilité",
+                "label" => "Civilité", "placeholder" => "Sélectionner une civilité"
             ])
             ->add('firstnameUser', TextType::class, ['label' => 'Prénom',
                 'attr' => ['autocomplete' => 'firstname', 'placeholder' => 'Prénom'],

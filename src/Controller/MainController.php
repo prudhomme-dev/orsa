@@ -31,7 +31,11 @@ class MainController extends AbstractController
     public function index(ChartBuilderInterface $chartBuilder, UserRepository $userRepository): Response
     {
 // TODO Revoir la gestion des toasts
-        if ($this->getUser()) {
+        if ($this->getUser() && !$this->getUser()->isAuthorized()) {
+            $this->addFlash("error", "Votre compte est bloqué ou non vérifié");
+            return $this->redirectToRoute("app_logout");
+        }
+        if ($this->getUser() && $this->getUser()->isAuthorized()) {
             // Mise à jour de la date de dernière connexion
             $user = $this->getUser()->setLastLoginDate(new DateTime());
             $userRepository->add($this->getUser(), true);
