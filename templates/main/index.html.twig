@@ -14,19 +14,7 @@
 
 {% block body %}
     {% if is_granted("ROLE_CANDIDATE") %}
-        <div class="row">
-            {% for flash in app.flashes('success') %}
-                <div class="alert alert-success" role="alert">
-                    {{ flash }}
-                </div>
-            {% endfor %}
-        </div>
-
-        <form action="">
-            <textarea class="textareamce"></textarea>
-        </form>
-
-
+        
         <div>{{ render_chart(chart) }}</div>
     {% endif %}
     {% if app.user %}

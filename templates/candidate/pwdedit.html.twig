@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil Candidat - {{ name_site }}{% endblock %}
+
+{% block body %}
+    <h2 class="row justify-content-center p-2">Modifier mon mot de passe</h2>
+
+    {{ form_start(requestForm) }}
+    <h4 class="row justify-content-center p-2">Votre mot de passe actuel</h4>
+    <div class="row justify-content-center">
+        <div class="col-10 text-center">{{ form_row(requestForm.actualPassword) }}</div>
+
+    </div>
+
+    <h4 class="row justify-content-center p-2">Votre nouveau mot de passe actuel</h4>
+    <div class="row justify-content-center">
+        <div class="col-10 text-center">{{ form_row(requestForm.newPlainPassword) }}</div>
+    </div>
+
+    <div class="row justify-content-center">
+        <button class="btn btn-success col-3 mt-2">Valider</button>
+    </div>
+
+
+    {{ form_end(requestForm) }}
+
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil Candidat - {{ name_site }}{% endblock %}
+
+{% block body %}
+    <h2 class="row justify-content-center p-2">Mon profil Candidat</h2>
+
+    {{ form_start(requestForm) }}
+    <h4 class="row justify-content-center p-2">Mes données de connexion</h4>
+    <div class="row justify-content-center">
+        <div class="col-10 text-center"> Adresse E-Mail de connexion
+            : {{ user.userIdentifier }} {{ form_row(requestForm.email) }}</div>
+
+    </div>
+    <div class="row justify-content-center">
+        <a href="{{ path('app_candidate_edit_mail') }}" class="col-3 m-2 btn btn-success btn-sm align-self-center">Changer
+            d'adresse E-Mail</a>
+        <a href="{{ path('app_candidate_change_pwd') }}" class="btn btn-success col-3 m-2 btn-sm">Modifier son mot de
+            passe</a>
+
+    </div>
+    <h4 class="row justify-content-center p-2">Mes données de contacts</h4>
+    <div class="row justify-content-center">
+        <div class="col-3 align-self-center m-0 p-0"> {{ form_row(requestForm.civility) }}</div>
+        <div class="col-3">{{ form_row(requestForm.firstnameUser) }}</div>
+        <div class="col-3">{{ form_row(requestForm.lastnameUser) }}</div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-10"> {{ form_row(requestForm.address) }}</div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-10"> {{ form_row(requestForm.addressTwo) }}</div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-10"> {{ form_row(requestForm.addressThree) }}</div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-5">
+            <div class="form-floating">
+                <input type="text" id="admin_edit_user_form_zipCode"
+                       name="admin_edit_user_form[zipCode]"
+                       required="required" value="{{ city.zipCode }}" autocomplete="zipcode" placeholder="Code Postal"
+                       class="form-control"
+                       onblur="getCitiesFromZipCode(this.value, 'candidate_edit_user_cityId');"/>
+                <label for="admin_edit_user_form_zipCode" class="form-label required">Code
+                    Postal</label></div>
+        </div>
+        <div class="col-5 align-self-center">
+            <p class="m-0 p-0 text-center">{{ city.city |upper }}</p>
+            <select id="candidate_edit_user_cityId" style="display: none" name="cityId"
+                    class="form-select" onblur="setCity(this.value, 'candidate_edit_user_form_idCity')">
+                <option value="">Saisissez un code postal pour modifier</option>
+            </select>
+        </div>
+        {{ form_row(requestForm.idCity, {'value': city.id }) }}
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-5"> {{ form_row(requestForm.phone) }}</div>
+        <div class="col-5"> {{ form_row(requestForm.mobilePhone) }}</div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-10"> {{ form_row(requestForm.emailContact) }}</div>
+    </div>
+    <h4 class="row justify-content-center p-2">Mon Curriculum Vitäe</h4>
+    {{ form_row(requestForm.uploadedCv) }}
+    <div class="row justify-content-center m-1">
+        {#  TODO Faire la route de suppresion du CV du profil #}
+        <a class="col-2 btn btn-success m-1 btn-sm"
+           onclick="document.getElementById('candidate_edit_user_form_uploadedCv').click()">
+            {% if user.uploadedCv %}
+                Remplacer mon CV
+            {% else %}
+                Télécharger mon CV
+            {% endif %}
+        </a>
+        {% if user.uploadedCv %}
+            <a href="{{ path('app_candidate_delcv') }}" class="col-2 m-1 btn btn-success btn-sm">Supprimer le CV</a>
+            <a href="{{ asset(user.uploadedCv) }}" target="_blank" class="col-2 m-1 btn btn-success btn-sm">Voir
+                le CV</a>
+        {% endif %}
+
+
+    </div>
+    <h4 class="row justify-content-center p-2">Ma lettre de motivation</h4>
+    <div class="row justify-content-center">
+        <div class="col-10"> {{ form_row(requestForm.coverletterContent) }}</div>
+    </div>
+
+    <div class="row justify-content-center">
+        <button class="btn btn-success col-3 mt-2">Valider</button>
+    </div>
+
+
+    {{ form_end(requestForm) }}
+
+{% endblock %}

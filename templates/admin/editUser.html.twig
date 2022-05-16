@@ -8,19 +8,56 @@
 
     {{ form_start(requestForm) }}
 
+    <div class="row justify-content-center">
+        <div class="col-10">{{ form_row(requestForm.email) }}</div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-3 align-self-center m-0 p-0"> {{ form_row(requestForm.civility) }}</div>
+        <div class="col-3">{{ form_row(requestForm.firstnameUser) }}</div>
+        <div class="col-3">{{ form_row(requestForm.lastnameUser) }}</div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-10"> {{ form_row(requestForm.address) }}</div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-10"> {{ form_row(requestForm.addressTwo) }}</div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-10"> {{ form_row(requestForm.addressThree) }}</div>
+    </div>
 
-    <div class="form-floating">
-        <input type="text" id="admin_edit_user_form_zipCode" name="admin_edit_user_form[zipCode]"
-               required="required" autocomplete="zipcode" placeholder="Code Postal"
-               class="form-control" onblur="getCitiesFromZipCode(this.value, 'admin_edit_user_cityId');">
-        <label for="admin_edit_user_form_zipCode" class="form-label required">Code
-            Postal</label></div>
-    <select id="admin_edit_user_cityId" onblur="" name="cityId" required="required"
-            class="form-select">
-    </select>
+    <div class="row justify-content-center">
+        <div class="col-5">
+            <div class="form-floating">
+                <input type="text" id="admin_edit_user_form_zipCode"
+                       name="admin_edit_user_form[zipCode]"
+                       required="required" value="{{ city.zipCode }}" autocomplete="zipcode" placeholder="Code Postal"
+                       class="form-control"
+                       onblur="getCitiesFromZipCode(this.value, 'admin_edit_user_cityId');"/>
+                <label for="admin_edit_user_form_zipCode" class="form-label required">Code
+                    Postal</label></div>
+        </div>
+        <div class="col-5 align-self-center">
+            <p class="m-0 p-0 text-center">{{ city.city |upper }}</p>
+            <select id="admin_edit_user_cityId" name="cityId"
+                    class="form-select" onblur="setCity(this.value, 'admin_edit_user_form_idCity')">
+                <option value="">Saisissez un code postal pour modifier</option>
+            </select>
+        </div>
+        {{ form_row(requestForm.idCity, {'value': city.id }) }}
+    </div>
 
+    <div class="row justify-content-center">
+        <div class="col-5"> {{ form_row(requestForm.phone) }}</div>
+        <div class="col-5"> {{ form_row(requestForm.mobilePhone) }}</div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-10"> {{ form_row(requestForm.emailContact) }}</div>
+    </div>
+    <div class="row justify-content-center">
+        <button class="btn btn-success col-5 mt-2">Envoyer</button>
+    </div>
 
-    <button class="btn btn-success">Envoyer</button>
     {{ form_end(requestForm) }}
 
 

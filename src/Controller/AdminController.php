@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Form\AdminEditUserFormType;
-use App\Form\FlightType;
 use App\Repository\CityRepository;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -68,15 +67,17 @@ class AdminController extends AbstractController
         $cities = $cityRepository->findAll();
         $form = $this->createForm(AdminEditUserFormType::class, $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $userRepository->add($user);
-            return $this->redirectToRoute('app_main', [], Response::HTTP_SEE_OTHER);
+            $citiSelect = $cityRepository->find($form->get("idCity")->getData());
+            $user->setCity($citiSelect);
+            $userRepository->add($user, true);
+            $this->addFlash("success", "Utilisateur modifié");
+            return $this->redirectToRoute('app_admin_users', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('admin/editUser.html.twig', [
             'userEdit' => $user,
-            'requestForm' => $form
+            'requestForm' => $form, 'city' => $user->getCity()
         ]);
 
 

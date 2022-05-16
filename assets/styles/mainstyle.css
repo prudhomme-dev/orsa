@@ -63,7 +63,7 @@ a:hover {
     background-color: var(--bs-primary) !important;
 }
 
-.form-control, .form-control:focus {
+.form-control, .form-control:focus, .form-control:disabled, .form-control[readonly] {
     background-color: var(--background-input);
     color: var(--background-link-btn-title);
 }
@@ -113,4 +113,8 @@ a:hover {
 
 .titlelegal {
     color: var(--background-input) !important;
+}
+
+.toast-container {
+    z-index: 1500;
 }

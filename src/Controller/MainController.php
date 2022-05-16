@@ -70,7 +70,6 @@ class MainController extends AbstractController
                 ],
             ],
         ]);
-        $this->addFlash('success', 'test');
         // Test graphique
         return $this->render('main/index.html.twig', [
             'controller_name' => 'MainController', 'chart' => $chart

@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil Candidat - {{ name_site }}{% endblock %}
+
+{% block body %}
+    <h2 class="row justify-content-center p-2">Modifier mon adresse E-Mail</h2>
+
+    {{ form_start(requestForm) }}
+
+    <h4 class="row justify-content-center p-2">Votre nouvelle adresse E-Mail</h4>
+    <div class="row justify-content-center">
+        <div class="col-10 text-center">{{ form_row(requestForm.newEMail) }}</div>
+    </div>
+
+    <div class="row justify-content-center">
+        <p class="m-2">Votre compte sera temporairement désactivé et vous recevrez un E-mail de vérification de votre
+            adresse E-Mail
+            pour réactiver votre compte</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <button class="btn btn-success col-3 mt-2">Valider</button>
+    </div>
+
+
+    {{ form_end(requestForm) }}
+
+{% endblock %}

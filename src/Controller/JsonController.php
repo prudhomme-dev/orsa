@@ -8,9 +8,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class JsonTestController extends AbstractController
+class JsonController extends AbstractController
 {
-    #[Route('/json/city/{zipCode}', name: 'app_json_city')]
+    #[Route('/city/{zipCode}', name: 'app_json_city')]
     public function ZipCode(Request $request, CityRepository $cityRepository): Response
     {
         $cities = $cityRepository->findBy(["zipCode" => $request->get('zipCode')]);
