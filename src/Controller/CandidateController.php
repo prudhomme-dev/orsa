@@ -8,9 +8,12 @@ use App\Form\ChangePwdFormType;
 use App\Repository\CityRepository;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
@@ -183,6 +186,30 @@ class CandidateController extends AbstractController
             }
 
 
+        }
+        return $this->redirectToRoute("app_candidate_profile");
+    }
+
+    #[Route('/view-cv', name: 'app_candidate_viewcv')]
+    public function viewcv(Request $request, UserRepository $userRepository): Response
+    {
+        if (!$this->getUser()) {
+            $this->addFlash("error", "Vous devez être connecté pour voir votre CV");
+            return $this->redirectToRoute("app_login");
+        }
+        if ($this->getUser() && !$this->getUser()->isAuthorized()) {
+            $this->addFlash("error", "Votre compte est bloqué ou non vérifié");
+            return $this->redirectToRoute("app_logout");
+        }
+
+        if ($this->getUser() && $this->getUser()->isAuthorized()) {
+            $user = $userRepository->find($this->getUser()->getId());
+            $file = $user->getUploadedCv();
+            if (!$file) {
+                $this->addFlash("error", "Votre profil ne contient pas de CV");
+                return $this->redirectToRoute("app_candidate_profile");
+            }
+            return new BinaryFileResponse($user->getUploadedCv());
         }
         return $this->redirectToRoute("app_candidate_profile");
     }

@@ -77,7 +77,7 @@
         </a>
         {% if user.uploadedCv %}
             <a href="{{ path('app_candidate_delcv') }}" class="col-2 m-1 btn btn-success btn-sm">Supprimer le CV</a>
-            <a href="{{ asset(user.uploadedCv) }}" target="_blank" class="col-2 m-1 btn btn-success btn-sm">Voir
+            <a href="{{ path('app_candidate_viewcv') }}" target="_blank" class="col-2 m-1 btn btn-success btn-sm">Voir
                 le CV</a>
         {% endif %}
 
