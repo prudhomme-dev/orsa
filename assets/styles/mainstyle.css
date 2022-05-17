@@ -122,3 +122,35 @@ a:hover {
 .toast-header {
     color: var(--background-link-btn-title);
 }
+
+.card {
+    background-color: var(--background-input);
+}
+
+.card-title {
+    color: var(--background-link-btn-title);
+}
+
+.company-link:hover {
+    color: var(--bs-primary);
+    transition: all 0.5s;
+}
+
+.list-group-item {
+    color: white;
+    background-color: var(--background-input);
+    border: 2px solid var(--background-link-btn-title);
+}
+
+.border-top {
+    border-top: 2px solid var(--background-link-btn-title) !important;
+}
+
+.coverletter {
+    background-color: white;
+}
+
+.icocheck {
+    color: var(--background-link-btn-title);
+    font-size: 25px;
+}

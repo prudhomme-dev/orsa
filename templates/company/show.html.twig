@@ -3,73 +3,145 @@
 {% block title %}Détails {{ company.companyName }} - {{ name_site }}{% endblock %}
 
 {% block body %}
-    <h2 class="row justify-content-center p-2">Détail de l'entreprise {{ company.companyName }}</h2>
+    <div class="row justify-content-center">
+        <a class="btn btn-success col-3 m-2" href="{{ path('app_company_index') }}">Retour à la liste</a>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title text-center">Détail de l'entreprise {{ company.companyName }}</h3>
+            <div class="row justify-content-center p-2">
+                <p class="card-text col-6 text-center">Adresse :<br/>
+                    {{ company.address }}<br/>
+                    {% if company.addressTwo %}
+                        {{ company.addressTwo }}<br/>
+                    {% endif %}
+                    {% if company.addressThree %}
+                        {{ company.addressThree }}<br/>
+                    {% endif %}
+                    {% if company.city %}
+                        {{ company.city.zipCode }} {{ company.city.city }}<br/>
+                    {% endif %}
+                </p>
+                <p class="card-text col-6 text-center">
+                    Téléphone : <a class="company-link"
+                                   href="tel:{{ company.phoneCompany }}">{{ company.phoneCompany }}</a><br/>
+                    {% if company.emailCompany %}
+                        Adresse E-Mail : <a class="company-link" href="mailto:{{ company.emailCompany }}">
+                        {{ company.emailCompany }}<br/>
+                    </a>
+                    {% endif %}
+                    {% if company.sendCv %}
+                        <span class="iconify icocheck" data-icon="bx:checkbox-checked"></span>&nbsp;
+                    {% else %}
+                        <span class="iconify icocheck" data-icon="bx:checkbox"></span>&nbsp;
+                    {% endif %}
+                    CV envoyé<br/>
+                    {% if company.sendCoverletter %}
+                        <span class="iconify icocheck" data-icon="bx:checkbox-checked"></span>&nbsp;
+                    {% else %}
+                        <span class="iconify icocheck" data-icon="bx:checkbox"></span>&nbsp;
+                    {% endif %}
+                    Lettre de motivation envoyée<br/>
 
-    <table class="table">
-        <tbody>
-        <tr>
-            <th>Raison Social</th>
-            <td>{{ company.companyName }}</td>
-        </tr>
-        <tr>
-            <th>Adresse</th>
-            <td>{{ company.address }}<br/>
-                {% if company.addressTwo %}
-                    {{ company.addressTwo }}<br/>
+                </p>
+            </div>
+            <div class="row justify-content-center">
+                <p class="card-text col-6 text-center">Statut : {{ status }}</p>
+                <p class="card-text col-6 text-center">Date de création
+                    : {{ company.createdDate ? company.createdDate|date('d/m/Y H:i:s') : '' }}</p>
+            </div>
+            <div class="row justify-content-center">
+                <a class="btn btn-success col-2 m-2"
+                   href="{{ path('app_company_edit', {'id': company.id}) }}">Editer</a>
+                {% if (company.applicationNotes.count < 2 ) %}
+                    <a class="btn btn-success col-2 m-2"
+                       href="{{ path('app_company_delete', {'id': company.id}) }}">Supprimer</a>
                 {% endif %}
-                {% if company.addressThree %}
-                    {{ company.addressThree }}<br/>
-                {% endif %}
-                {% if company.city %}
-                    {{ company.city.zipCode }} {{ company.city.city }}<br/>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <th>Téléphone</th>
-            <td>{{ company.phoneCompany }}</td>
-        </tr>
-        <tr>
-            <th>Adresse E-Mail</th>
-            <td>{{ company.emailCompany }}</td>
-        </tr>
-        <tr>
-            <th>Statut</th>
-            <td>{{ status }}</td>
-        </tr>
-        <tr>
-            <th>Date de création</th>
-            <td>{{ company.createdDate ? company.createdDate|date('d/m/Y H:i:s') : '' }}</td>
-        </tr>
-        </tbody>
-    </table>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <h3 class="card-title text-center">Contacts</h3>
+
+            <ul class="list-group list-group-flush">
+
+                {% for contact in company.contacts|sort((a,b) => a.contactLastname <=> b.contactLastname) %}
+                    <li class="list-group-item col-12">
+
+                        <div class="row">
+                            {{ contact.Civility.nameCivility }} {{ contact.contactFirstname }} {{ contact.contactLastname|upper }}
+                            {% if contact.contactFunction %}
+                                ({{ contact.contactFunction }})
+                            {% endif %}
+                        </div>
+                        <div class="row justify-content-end">
+                            {% if contact.contactEmail %}
+                                <a href="mailto:{{ contact.contactEmail }}" class="btn btn-success col-1 m-1"><span
+                                            class="iconify"
+                                            data-icon="ant-design:mail-outlined"></span></a>
+
+                            {% endif %}
+                            {% if contact.contactPhone %}
+                                <a href="tel:{{ contact.contactPhone }}" class="btn btn-success col-1  m-1"><span
+                                            class="iconify"
+                                            data-icon="carbon:phone-filled"></span></a>
+                            {% endif %}
+                            {% if contact.contactMobilePhone %}
+                                <a href="tel:{{ contact.contactMobilePhone }}" class="btn btn-success col-1  m-1"><span
+                                            class="iconify" data-icon="akar-icons:mobile-device"></span></a>
+                            {% endif %}
+                            <a href="" class="btn btn-success m-1 col-1"><span class="iconify"
+                                                                               data-icon="ci:edit"></span></a>
+                            <a href="" class="btn btn-success m-1 col-1"><span class="iconify"
+                                                                               data-icon="ep:remove-filled"></span></a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="row justify-content-center border-top">
+                <a class="btn btn-success col-2 m-2"
+                   href="#">Ajouter</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <h3 class="card-title text-center">Actions</h3>
+
+            <ul class="list-group list-group-flush">
+
+                {% for action in company.applicationNotes|sort((a, b) => a.id<b.id) %}
+                    <li class="list-group-item col-12">
+
+                        <div class="row">
+                            <span class="col-2">{{ action.date | date('d/m/Y H:i:s') }}</span>
+                            <span class="col-3">{{ action.status.statusName }}</span>
+                            <span class="col-7">{{ action.messageNote }}</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="row justify-content-center border-top">
+                <a class="btn btn-success col-2 m-2"
+                   href="#">Ajouter</a>
+            </div>
+        </div>
+    </div>
+
+    {# TODO Mettre en forme la lettre de motivation et l'export PDF #}
     {% if company.coverletterContent %}
         <div class="row justify-content-center mt-2">
-            <div class="p-3 col-10" style="background-color: white">{{ company.coverletterContent|raw }}</div>
+            <div class="p-3 col-10 coverletter">{{ company.coverletterContent|raw }}</div>
         </div>
         <div class="row justify-content-center">
-            <a href="" class="col-2 btn btn-success m-2">Export PDF</a>
+            <a href="#" class="col-2 btn btn-success m-2">Export PDF</a>
         </div>
 
     {% endif %}
 
-    <h4>Contacts</h4>
-    <ul>
-        {% for contact in company.contacts %}
-            <li>{{ contact.contactFirstname }}</li>
-
-        {% endfor %}
-    </ul>
-    <h4>Actions réalisées</h4>
-    <ul>
-        {% for action in company.applicationNotes %}
-
-            <li>{{ action.status.statusName }} / {{ action.date | date('d/m/Y H:i:s') }} / {{ action.messageNote }}</li>
-
-        {% endfor %}
-    </ul>
-
-    <a href="{{ path('app_company_edit', {'id': company.id}) }}">Editer</a>
-    <a href="{{ path('app_company_index') }}">Retour à la liste</a>
 
 {% endblock %}
