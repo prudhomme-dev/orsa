@@ -24,7 +24,7 @@ class ApplicationNote
     private $Status;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'applicationNotes')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private $company;
 
     public function getId(): ?int

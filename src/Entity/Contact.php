@@ -36,7 +36,7 @@ class Contact
     private $Civility;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'contacts')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private $company;
 
     public function getId(): ?int

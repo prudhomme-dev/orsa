@@ -8,8 +8,6 @@ use App\Form\ChangePwdFormType;
 use App\Repository\CityRepository;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
-use Dompdf\Dompdf;
-use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

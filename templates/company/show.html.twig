@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails {{ company.companyName }} - {{ name_site }}{% endblock %}
+
+{% block body %}
+    <h2 class="row justify-content-center p-2">Détail de l'entreprise {{ company.companyName }}</h2>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Raison Social</th>
+            <td>{{ company.companyName }}</td>
+        </tr>
+        <tr>
+            <th>Adresse</th>
+            <td>{{ company.address }}<br/>
+                {% if company.addressTwo %}
+                    {{ company.addressTwo }}<br/>
+                {% endif %}
+                {% if company.addressThree %}
+                    {{ company.addressThree }}<br/>
+                {% endif %}
+                {% if company.city %}
+                    {{ company.city.zipCode }} {{ company.city.city }}<br/>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Téléphone</th>
+            <td>{{ company.phoneCompany }}</td>
+        </tr>
+        <tr>
+            <th>Adresse E-Mail</th>
+            <td>{{ company.emailCompany }}</td>
+        </tr>
+        <tr>
+            <th>Statut</th>
+            <td>{{ status }}</td>
+        </tr>
+        <tr>
+            <th>Date de création</th>
+            <td>{{ company.createdDate ? company.createdDate|date('d/m/Y H:i:s') : '' }}</td>
+        </tr>
+        </tbody>
+    </table>
+    {% if company.coverletterContent %}
+        <div class="row justify-content-center mt-2">
+            <div class="p-3 col-10" style="background-color: white">{{ company.coverletterContent|raw }}</div>
+        </div>
+        <div class="row justify-content-center">
+            <a href="" class="col-2 btn btn-success m-2">Export PDF</a>
+        </div>
+
+    {% endif %}
+
+    <h4>Contacts</h4>
+    <ul>
+        {% for contact in company.contacts %}
+            <li>{{ contact.contactFirstname }}</li>
+
+        {% endfor %}
+    </ul>
+    <h4>Actions réalisées</h4>
+    <ul>
+        {% for action in company.applicationNotes %}
+
+            <li>{{ action.status.statusName }} / {{ action.date | date('d/m/Y H:i:s') }} / {{ action.messageNote }}</li>
+
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_company_edit', {'id': company.id}) }}">Editer</a>
+    <a href="{{ path('app_company_index') }}">Retour à la liste</a>
+
+{% endblock %}

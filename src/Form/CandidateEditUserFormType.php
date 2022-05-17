@@ -87,7 +87,7 @@ class CandidateEditUserFormType extends AbstractType
                     'maxSizeMessage' => 'Taille du fichier trop importante',
                     'mimeTypes' => ['application/pdf'], 'mimeTypesMessage' => 'Merci de téléverser un fichier PDF'
                 ])]])
-            ->add("coverletterContent", TextareaType::class, ['label' => 'Ma lettre de motivation', "required" => false, "attr" => ["class" => "textareamce"]]);
+            ->add("coverletterContent", TextareaType::class, ['label' => false, "required" => false, "attr" => ["class" => "textareamce"]]);
 
 
     }
