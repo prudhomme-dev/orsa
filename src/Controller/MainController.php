@@ -167,9 +167,9 @@ class MainController extends AbstractController
 
         if (count($status) === 0) {
             $statusArray = [
-                "Candidatures à réaliser",
+                "Candidature à réaliser",
                 "Candidature envoyée",
-                "Candidatures refusée",
+                "Candidature refusée",
                 "Candidature à relancer",
                 "Entretien planifiée"];
             foreach ($statusArray as $statusOne) {
