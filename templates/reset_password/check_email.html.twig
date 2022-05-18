@@ -1,11 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Password Reset Email Sent{% endblock %}
+{% block title %}Réinitialisation de mot de passe - {{ name_site }}{% endblock %}
 
 {% block body %}
-    <p>
-        If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
-        This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    </p>
-    <p>If you don't receive an email please check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.</p>
+    <h2 class="row justify-content-center p-2">Réinitialisation de mot de passe</h2>
+
+    <div class="row justify-content-around">
+        <div class="col-12 col-md-6 align-self-center">
+            <img src="{{ asset('/assets/img/reset-password-img.jpg') }}" class="img-fluid title-image"
+                 alt="S'enregistrer">
+        </div>
+        <div class="col-12 col-md-6 align-self-center">
+
+            <div class="row">
+                <div class="col"><p>Si un compte correspondant à votre adresse e-mail existe, alors un e-mail vient
+                        d'être envoyé contenant un lien que vous pouvez utiliser pour réinitialiser votre mot de
+                        passe.</p></div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <p>
+                        Le lien expire
+                        dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}
+                        .
+                    </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col"><p>
+                        Si vous ne recevez pas d'E-Mail, merci de vérifier votre dossier de courriers indésirables ou
+                        <a href="{{ path('app_forgot_password_request') }}">réessayez</a>
+                    </p></div>
+            </div>
+
+        </div>
+    </div>
 {% endblock %}

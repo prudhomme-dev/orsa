@@ -2,17 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Setting;
 use App\Entity\User;
-use App\Form\AdminEditUserFormType;
 use App\Form\RegistrationFormType;
+use App\Mail\Mail;
 use App\Security\EmailVerifier;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -52,15 +51,25 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('noreply@monstage.app', 'MonStage.APP'))
-                    ->to($user->getEmail())
-                    ->subject("Bienvenue sur {$_ENV['NAME_SITE']}")
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
-            // do anything else you need here, like send an email
+            $smtp = $entityManager->getRepository(Setting::class)->smtpSettings();
+            $mail = new Mail();
+            $mail->smtpHost = $smtp["smtp_server"];
+            $mail->smtpPort = (int)$smtp["smtp_port"];
+            $mail->smtpUser = $smtp["smtp_user"];
+            $mail->smtpPwd = $smtp["smtp_pass"];
+            $mail->environmentTwig = $this->container->get('twig');
+            $mail->smtpFrom = $smtp["smtp_from"];
+            $mail->smtpFromName = $smtp["smtp_from_name"];
+            $mail->subject = "Bienvenue sur {$_ENV['NAME_SITE']}";
+            $mail->template = "registration/confirmation_email.html.twig";
+            $mail->context = $this->emailVerifier->getContextLink("app_verify_email", $user);
+            $mail->to = ["address" => $user->getEmail(), "name" => "{$user->getFirstnameUser()} {$user->getLastnameUser()}"];
+            if ($mail->emailSend()) {
+                $this->addFlash("success", "Un E-Mail va vous être envoyé pour activer votre compte");
+            } else {
+                $this->addFlash("error", "Une erreur système n'a pas permise d'envoyer l'email d'activation de votre compte");
+            }
+
             return $this->render("registration/register-send.html.twig");
         }
 
@@ -84,7 +93,7 @@ class RegistrationController extends AbstractController
         }
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
+        $this->addFlash('success', 'Votre E-Mail a bie été vérifiée');
 
         return $this->redirectToRoute('app_main');
     }

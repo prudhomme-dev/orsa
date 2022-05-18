@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Setting;
 use App\Form\AdminEditUserFormType;
 use App\Repository\CityRepository;
+use App\Repository\SettingRepository;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -79,8 +81,36 @@ class AdminController extends AbstractController
             'userEdit' => $user,
             'requestForm' => $form, 'city' => $user->getCity()
         ]);
+    }
 
+    #[Route('/settings', name: 'app_admin_settings', methods: ['GET', 'POST'])]
+    public function settings(Request $request, SettingRepository $settingRepository): Response
+    {
+        $datas = $request->request->all();
+        foreach ($datas as $key => $data) {
+            $setting = $settingRepository->findOneBy(["keySetting" => $key]);
+            $setting->setValue($data);
+            $settingRepository->add($setting, true);
+        }
 
-//        return $this->redirectToRoute('app_admin_users');
+        $smtp = $settingRepository->findBykeyObj("SMTP");
+        return $this->render('admin/settings.html.twig', ['smtp' => $smtp]);
+    }
+
+    #[Route('users/delete/{idUser}', name: 'app_admin_user_delete')]
+    public function delete(Request $request, UserRepository $userRepository): Response
+    {
+        $user = $userRepository->find($request->get("idUser"));
+        if (!$user) {
+            $this->addFlash("error", "Cette utilisateur n'existe pas");
+            return $this->redirectToRoute("app_admin_users");
+        }
+        if ($user->getCompanies()->count()) {
+            $this->addFlash("error", "Impossible de supprimer cet utilisateur, il a déjà créé des entreprises sur son compte");
+            return $this->redirectToRoute("app_admin_users");
+        }
+        $userRepository->remove($user, true);
+        $this->addFlash("success", "Utilisateur supprimé avec succès");
+        return $this->redirectToRoute("app_admin_users");
     }
 }

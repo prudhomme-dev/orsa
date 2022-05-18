@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Configuration de l'application - {{ name_site }}{% endblock %}
+
+{% block body %}
+
+    <h2 class="row justify-content-center p-2">Configuration de l'application</h2>
+    <div class="row justify-content-center">
+        <form action="{{ path('app_admin_settings') }}" method="post">
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h3 class="card-title text-center">Serveur SMTP</h3>
+
+                    {% for param in smtp %}
+
+                        <div class="form-floating mb-2">
+                            <input type="{% if param.keySetting ends with "pass" %}password{% else %}text{% endif %}"
+                                   id="{{ param.keySetting }}" name="{{ param.keySetting }}"
+                                   autocomplete="address" placeholder="Adresse" class="form-control"
+                                   value="{{ param.value }}">
+                            <label for="{{ param.keySetting }}" class="form-label">{{ param.keySetting }}</label>
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+                <div class="row justify-content-center border-top">
+                    <button class="btn btn-success col-2 m-2">Valider
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+
+
+    </div>
+
+
+{% endblock %}

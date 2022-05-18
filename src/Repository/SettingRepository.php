@@ -70,6 +70,26 @@ class SettingRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return array Return an associated array of SMTP Setting value
+     */
+
+    public function smtpSettings(): array
+    {
+        $request = $this->createQueryBuilder('s')
+            ->andWhere('s.keySetting LIKE :val')
+            ->setParameter('val', "SMTP_%")
+            ->orderBy('s.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+        $smtp = null;
+        foreach ($request as $param) {
+            $smtp[$param->getKeySetting()] = $param->getValue();
+        }
+        return $smtp;
+
+    }
+
 //    public function findOneBySomeField($value): ?Setting
 //    {
 //        return $this->createQueryBuilder('s')

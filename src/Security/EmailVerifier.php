@@ -42,6 +42,25 @@ class EmailVerifier
     }
 
     /**
+     * @param string $verifyEmailRouteName
+     * @param UserInterface $user
+     * @return array Array with context template mail for activate the user account
+     */
+    public function getContextLink(string $verifyEmailRouteName, UserInterface $user): array
+    {
+        $signatureComponents = $this->verifyEmailHelper->generateSignature(
+            $verifyEmailRouteName,
+            $user->getId(),
+            $user->getEmail()
+        );
+
+        $context['signedUrl'] = $signatureComponents->getSignedUrl();
+        $context['expiresAtMessageKey'] = $signatureComponents->getExpirationMessageKey();
+        $context['expiresAtMessageData'] = $signatureComponents->getExpirationMessageData();
+        return $context;
+    }
+
+    /**
      * @throws VerifyEmailExceptionInterface
      */
     public function handleEmailConfirmation(Request $request, UserInterface $user): void

@@ -77,6 +77,33 @@
                                 ({{ contact.contactFunction }})
                             {% endif %}
                         </div>
+
+                        {% if contact.contactEmail %}
+                            <div class="row">
+                                <p class="m-0"><span class="iconify"
+                                                     data-icon="ant-design:mail-outlined"></span> {{ contact.contactEmail }}
+                                </p>
+
+                            </div>
+                        {% endif %}
+
+                        {% if contact.contactPhone %}
+                            <div class="row">
+                                <p class="m-0"><span class="iconify"
+                                                     data-icon="carbon:phone-filled"></span> {{ contact.contactPhone }}
+                                </p>
+                            </div>
+                        {% endif %}
+
+                        {% if contact.contactMobilePhone %}
+                            <div class="row">
+                                <p class="m-0"><span class="iconify"
+                                                     data-icon="akar-icons:mobile-device"></span> {{ contact.contactMobilePhone }}
+                                </p>
+                            </div>
+                        {% endif %}
+
+
                         <div class="row justify-content-end">
                             {% if contact.contactEmail %}
                                 <a href="mailto:{{ contact.contactEmail }}" class="btn btn-success col-1 m-1"><span
@@ -93,17 +120,19 @@
                                 <a href="tel:{{ contact.contactMobilePhone }}" class="btn btn-success col-1  m-1"><span
                                             class="iconify" data-icon="akar-icons:mobile-device"></span></a>
                             {% endif %}
-                            <a href="" class="btn btn-success m-1 col-1"><span class="iconify"
-                                                                               data-icon="ci:edit"></span></a>
-                            <a href="" class="btn btn-success m-1 col-1"><span class="iconify"
-                                                                               data-icon="ep:remove-filled"></span></a>
+                            <a href="{{ path('app_contact_edit', {'id': contact.id}) }}"
+                               class="btn btn-success m-1 col-1"><span class="iconify"
+                                                                       data-icon="ci:edit"></span></a>
+                            <a href="{{ path('app_contact_delete', {'id': contact.id}) }}"
+                               class="btn btn-success m-1 col-1"><span class="iconify"
+                                                                       data-icon="ep:remove-filled"></span></a>
                         </div>
                     </li>
                 {% endfor %}
             </ul>
             <div class="row justify-content-center border-top">
                 <a class="btn btn-success col-2 m-2"
-                   href="#">Ajouter</a>
+                   href="{{ path('app_contact_new', {'idCompany': company.id}) }}">Ajouter</a>
             </div>
         </div>
     </div>
@@ -139,6 +168,8 @@
         </div>
         <div class="row justify-content-center">
             <a href="#" class="col-2 btn btn-success m-2">Export PDF</a>
+            <a href="{{ path('app_candidate_viewcv') }}" target="_blank" class="col-2 btn btn-success m-2">Voir le
+                CV</a>
         </div>
 
     {% endif %}

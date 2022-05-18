@@ -31,20 +31,29 @@
             <div class="form-floating">
                 <input type="text" id="admin_edit_user_form_zipCode"
                        name="admin_edit_user_form[zipCode]"
-                       required="required" value="{{ city.zipCode }}" autocomplete="zipcode" placeholder="Code Postal"
+                       required="required" value="{% if city %}{{ city.zipCode }}{% endif %}" autocomplete="zipcode"
+                       placeholder="Code Postal"
                        class="form-control"
                        onblur="getCitiesFromZipCode(this.value, 'admin_edit_user_cityId');"/>
                 <label for="admin_edit_user_form_zipCode" class="form-label required">Code
                     Postal</label></div>
         </div>
         <div class="col-5 align-self-center">
-            <p class="m-0 p-0 text-center">{{ city.city |upper }}</p>
+            <p class="m-0 p-0 text-center">
+                {% if city %}
+                    {{ city.city |upper }}
+                {% endif %}
+            </p>
             <select id="admin_edit_user_cityId" name="cityId"
                     class="form-select" onblur="setCity(this.value, 'admin_edit_user_form_idCity')">
                 <option value="">Saisissez un code postal pour modifier</option>
             </select>
         </div>
-        {{ form_row(requestForm.idCity, {'value': city.id }) }}
+        {% if city %}
+            {{ form_row(requestForm.idCity, {'value': city.id }) }}
+        {% else %}
+            {{ form_row(requestForm.idCity, {'value': 0 }) }}
+        {% endif %}
     </div>
 
     <div class="row justify-content-center">

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Setting;
 use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
@@ -164,41 +165,26 @@ class ResetPasswordController extends AbstractController
 
             return $this->redirectToRoute('app_check_email');
         }
-//        Mail::emailTransport(
-//            $setting,
-//            [$user->getEmail(), $user->getFirstnameUser()],
-//            "Réinitialisation de mot de passe",
-//            null,
-//            "reset_password/email.html.twig",
-//            ['resetToken' => $resetToken]
-//        );
 
-        // TODO essayer de refaire avec le template de base : Erreur de function twig non reconnu - Bug du lien dans la solution ci-dessous
-
-        $contentHtml = "<h1>Hi!</h1>
-<p>To reset your password, please visit the following link</p>
-<a href='{$this->generateUrl("app_reset_password", [$resetToken->getToken()])}'>{$this->generateUrl("app_reset_password", [$resetToken->getToken()])}</a>
-<p>Cheers!</p>";
-
-        Mail::emailTransport(
-            $setting,
-            [$user->getEmail(), $user->getFirstnameUser()],
-            "Réinitialisation de mot de passe",
-            $contentHtml
-        );
-
-
-//        $email = (new TemplatedEmail())
-//            ->from(new Address('noreply@monstage.app', 'MonStage.APP'))
-//            ->to($user->getEmail())
-//            ->subject('Your password reset request')
-//            ->htmlTemplate('reset_password/email.html.twig')
-//            ->context([
-//                'resetToken' => $resetToken,
-//            ]);
-//
-//
-//        $mailer->send($email);
+        $smtp = $this->entityManager->getRepository(Setting::class)->smtpSettings();
+        $mail = new Mail();
+        $mail->smtpHost = $smtp["smtp_server"];
+        $mail->smtpPort = (int)$smtp["smtp_port"];
+        $mail->smtpUser = $smtp["smtp_user"];
+        $mail->smtpPwd = $smtp["smtp_pass"];
+        $mail->environmentTwig = $this->container->get('twig');
+        $mail->smtpFrom = $smtp["smtp_from"];
+        $mail->smtpFromName = $smtp["smtp_from_name"];
+        $mail->subject = "Votre demande de réinitialisation de mot de passe";
+        $mail->template = "reset_password/email.html.twig";
+        $mail->context = ['resetToken' => $resetToken];
+        $mail->to = ["address" => $user->getEmail(), "name" => $user->getLastnameUser()];
+        if ($mail->emailSend()) {
+            $this->addFlash("success", "Un E-Mail va vous être envoyé pour réinitialiser votre mot de passe");
+        } else {
+            $this->addFlash("error", "Une erreur système n'a pas permise d'envoyer l'email de réinitialisation du mot de passe");
+            return $this->redirectToRoute("app_forgot_password_request");
+        }
         // Store the token object in session for retrieval in check-email route.
         $this->setTokenObjectInSession($resetToken);
 

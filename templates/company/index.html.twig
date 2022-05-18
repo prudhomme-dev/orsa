@@ -37,6 +37,7 @@
                     <td class="text-center">{{ company.city.city }} ({{ company.city.zipcode }})</td>
                     <td class="text-center">{{ company.phoneCompany }}</td>
                     <td class="text-center">{{ company.emailCompany }}</td>
+                    {#  TODO Essayer de trouver une solution pour la timezone #}
                     <td class="text-center">{{ company.createdDate|date('d/m/Y') }}</td>
                     <td class="text-center">{{ company.applicationnotes.count }}
                         <a href="#">
@@ -44,7 +45,7 @@
                         </a>
                     </td>
                     <td class="text-center">{{ company.contacts.count }}
-                        <a href="#">
+                        <a href="{{ path('app_contact_new', {'idCompany': company.id}) }}">
                             <span class="iconify" data-icon="carbon:add-filled" title="Ajouter un contact"></span>
                         </a>
                     </td>
@@ -60,6 +61,7 @@
                                     <a class="dropdown-item link-warning"
                                        href="#">Prospecter</a>
                                 </li>
+
                                 <li>
                                     <a class="dropdown-item link-success"
                                        href="{{ path('app_company_show', {'id': company.id}) }}">Détails</a>
@@ -80,7 +82,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="12">no records found</td>
+                    <td colspan="12">Aucune entreprise n'a été trouvée</td>
                 </tr>
             {% endfor %}
             </tbody>

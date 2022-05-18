@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ company.companyName }} - Edition du contact {{ contact.contactLastname }} - {{ name_site }}{% endblock %}
+
+{% block body %}
+    <h2 class="row justify-content-center p-2">{{ company.companyName }} - Edition d'un contact</h2>
+    <div class="row justify-content-end">
+        {{ form_start(form) }}
+        {{ form_row(form.Civility) }}
+        {{ form_row(form.contactFirstname) }}
+        {{ form_row(form.contactLastname) }}
+        {{ form_row(form.contactEmail) }}
+        {{ form_row(form.contactPhone) }}
+        {{ form_row(form.contactMobilePhone) }}
+        {{ form_row(form.contactFunction) }}
+        <div class="row justify-content-center">
+            <button class="btn btn-success col-3 mt-2">Envoyer</button>
+        </div>
+        <div class="row justify-content-center">
+            <a class="btn btn-success col-3 mt-2" href="{{ path('app_company_show', {'id': company.id}) }}">Voir la
+                fiche entreprise</a>
+        </div>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}

@@ -18,7 +18,6 @@
         <table class="table table-striped table-hover mt-1">
             <thead>
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Prénom</th>
                 <th scope="col">Nom</th>
                 <th scope="col">Adresse E-Mail</th>
@@ -36,7 +35,6 @@
                 {% else %}
                     <tr class="table-danger">
                 {% endif %}
-                <th scope="row">{{ userlist.id }}</th>
                 <td>{{ userlist.firstnameUser }}</td>
                 <td>{{ userlist.lastnameUser }}</td>
                 <td>{{ userlist.email }}</td>
@@ -94,7 +92,11 @@
                                            href="{{ path('app_admin_user_block', {'id': userlist.id}) }}">Bloquer</a>
                                     </li>
                                 {% endif %}
-                                <li><a class="dropdown-item link-danger" href="#">Supprimer</a></li>
+                                {% if userlist.companies.count == 0 %}
+                                    <li><a class="dropdown-item link-danger"
+                                           href="{{ path('app_admin_user_delete', {'idUser': userlist.id}) }}">Supprimer</a>
+                                    </li>
+                                {% endif %}
                             {% endif %}
                         </ul>
                     </div>

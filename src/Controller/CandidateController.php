@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Setting;
 use App\Form\CandidateEditUserFormType;
 use App\Form\ChangeMailFormType;
 use App\Form\ChangePwdFormType;
+use App\Mail\Mail;
 use App\Repository\CityRepository;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,7 +66,7 @@ class CandidateController extends AbstractController
                 return $this->redirectToRoute('app_main', [], Response::HTTP_SEE_OTHER);
             }
             return $this->renderForm('candidate/profile.html.twig', ['user' => $user,
-                'requestForm' => $form, 'city' => $user->getCity()
+                'requestForm' => $form, 'city' => $user->getCity() ?: null
             ]);
         }
 
@@ -107,7 +110,7 @@ class CandidateController extends AbstractController
     }
 
     #[Route('/edit-mail', name: 'app_candidate_edit_mail')]
-    public function mail(Request $request, UserRepository $userRepository, EmailVerifier $emailVerifier): Response
+    public function mail(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, EmailVerifier $emailVerifier): Response
     {
         if (!$this->getUser()) {
             $this->addFlash("error", "Vous devez être connecté pour modifier l'adresse E-Mail de votre profil");
@@ -136,19 +139,29 @@ class CandidateController extends AbstractController
                     return $this->renderForm('candidate/mailedit.html.twig', [
                         'requestForm' => $form]);
                 }
-                // generate a signed url and email it to the user
-                $user->setIsVerified(false);
-                $user->setEmail($newEmail);
-                $userRepository->add($user, true);
-                $this->addFlash("messages", "Veuillez confirmer votre adresse E-Mail en cliquant sur le lien du mail que vous allez recevoir dans quelques instant");
                 $this->emailVerifier = $emailVerifier;
-                $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                    (new TemplatedEmail())
-                        ->from(new Address('noreply@monstage.app', 'MonStage.APP'))
-                        ->to($user->getEmail())
-                        ->subject("Bienvenue sur {$_ENV['NAME_SITE']}")
-                        ->htmlTemplate('registration/confirmation_email.html.twig')
-                );
+                // TODO : Pb lors du click du lien de vérification - Contrôler les routes accessibles
+                $smtp = $entityManager->getRepository(Setting::class)->smtpSettings();
+                $mail = new Mail();
+                $mail->smtpHost = $smtp["smtp_server"];
+                $mail->smtpPort = (int)$smtp["smtp_port"];
+                $mail->smtpUser = $smtp["smtp_user"];
+                $mail->smtpPwd = $smtp["smtp_pass"];
+                $mail->environmentTwig = $this->container->get('twig');
+                $mail->smtpFrom = $smtp["smtp_from"];
+                $mail->smtpFromName = $smtp["smtp_from_name"];
+                $mail->subject = "{$_ENV['NAME_SITE']} - Validez votre adresse E-Mail";
+                $mail->template = "registration/confirmation_email.html.twig";
+                $mail->context = $this->emailVerifier->getContextLink("app_verify_email", $user);
+                $mail->to = ["address" => $user->getEmail(), "name" => "{$user->getFirstnameUser()} {$user->getLastnameUser()}"];
+                if ($mail->emailSend()) {
+                    $user->setIsVerified(false);
+                    $user->setEmail($newEmail);
+                    $this->addFlash("success", "Veuillez confirmer votre adresse E-Mail en cliquant sur le lien du mail que vous allez recevoir dans quelques instant");
+                    $userRepository->add($user, true);
+                } else {
+                    $this->addFlash("error", "Une erreur système n'a pas permise d'envoyer l'email d'activation de votre compte");
+                }
                 // do anything else you need here, like send an email
                 return $this->render("registration/register-send.html.twig");
 
