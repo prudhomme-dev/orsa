@@ -58,7 +58,7 @@ class Contact
 
     public function getContactLastname(): ?string
     {
-        return $this->contactLastname;
+        return mb_strtoupper($this->contactLastname);
     }
 
     public function setContactLastname(string $contactLastname): self

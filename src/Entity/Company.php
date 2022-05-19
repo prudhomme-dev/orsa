@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CompanyRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -271,6 +272,87 @@ class Company
     {
         $this->city = $city;
 
+        return $this;
+    }
+
+    public function getCoverLetterContentFormat(?Contact $contact = null): self
+    {
+        // Variable %DATE%
+        $date = new DateTime();
+        $reformat = str_replace("%DATE%", $date->format("d/m/Y"), $this->coverletterContent);
+        $this->coverletterContent = $reformat;
+
+        // Variable %ADDRESSCOMPANY%
+        $address = $this->companyName;
+        if ($this->address) $address .= "<br/>{$this->address}";
+        if ($this->addressTwo) $address .= "<br/>{$this->addressTwo}";
+        if ($this->addressThree) $address .= "<br/>{$this->addressThree}";
+        $address .= "<br/>{$this->getCity()->getZipCode()} {$this->getCity()->getCity()}";
+        $reformat = str_replace("%ADDRESSCOMPANY%", $address, $this->coverletterContent);
+        $this->coverletterContent = $reformat;
+
+        // Variable %NAMECOMPANY%
+        $reformat = str_replace("%NAMECOMPANY%", $this->companyName, $this->coverletterContent);
+        $this->coverletterContent = $reformat;
+        if ($contact) {
+
+            //%ADDRESSCOMPANYWITHCONTACT%
+            $contactName = $contact->getCivility()->getNameCivility() . " " . $contact->getContactFirstname() . " " . $contact->getContactLastname();
+            $address = $this->companyName;
+            $address .= "<br/>{$contactName}";
+            if ($this->address) $address .= "<br/>{$this->address}";
+            if ($this->addressTwo) $address .= "<br/>{$this->addressTwo}";
+            if ($this->addressThree) $address .= "<br/>{$this->addressThree}";
+            $address .= "<br/>{$this->getCity()->getZipCode()} {$this->getCity()->getCity()}";
+            $reformat = str_replace("%ADDRESSCOMPANYWITHCONTACT%", $address, $this->coverletterContent);
+            $this->coverletterContent = $reformat;
+            // Variable %NAMECONTACT%
+            $reformat = str_replace("%NAMECONTACT%", $contactName, $this->coverletterContent);
+            $this->coverletterContent = $reformat;
+            // Variable %LASTNAMECONTACT%
+            $reformat = str_replace("%LASTNAMECONTACT%", $contact->getContactLastname(), $this->coverletterContent);
+            $this->coverletterContent = $reformat;
+            // Variable %FIRSTNAMECONTACT%
+            $reformat = str_replace("%FIRSTNAMECONTACT%", $contact->getContactFirstname(), $this->coverletterContent);
+            $this->coverletterContent = $reformat;
+            // Variable %CIVILITYCONTACT%
+            $reformat = str_replace("%CIVILITYCONTACT%", $contact->getCivility()->getNameCivility(), $this->coverletterContent);
+            $this->coverletterContent = $reformat;
+            // Variable %PHONECONTACT%
+            $reformat = str_replace("%PHONECONTACT%", $contact->getContactPhone(), $this->coverletterContent);
+            $this->coverletterContent = $reformat;
+            // Variable %PHONEMOBILECONTACT%
+            $reformat = str_replace("%PHONEMOBILECONTACT%", $contact->getContactMobilePhone(), $this->coverletterContent);
+            $this->coverletterContent = $reformat;
+            // Variable %EMAILCONTACT%
+            $reformat = str_replace("%EMAILCONTACT%", $contact->getContactEmail(), $this->coverletterContent);
+            $this->coverletterContent = $reformat;
+        }
+
+        // Variable %PROFILE_NAME%
+        $profileName = $this->getUser()->getCivility()->getNameCivility() . " " . $this->getUser()->getFirstnameUser() . " " . $this->getUser()->getLastnameUser();
+        $reformat = str_replace("%PROFILE_NAME%", $profileName, $this->coverletterContent);
+        $this->coverletterContent = $reformat;
+
+        // Variable %PROFILE_ADDRESS%
+        $address = $this->getAddress();
+        if ($this->getAddressTwo()) $address .= "<br/>{$this->getAddressTwo()}";
+        if ($this->getAddressThree()) $address .= "<br/>{$this->getAddressThree()}";
+        if ($this->getUser()->getCity()) $address .= "<br/>{$this->getUser()->getCity()->getZipCode()} {$this->getUser()->getCity()->getCity()}";
+        $reformat = str_replace("%PROFILE_ADDRESS%", $address, $this->coverletterContent);
+        $this->coverletterContent = $reformat;
+
+        // Variable %PROFILE_PHONE%
+        $reformat = str_replace("%PROFILE_PHONE%", $this->getUser()->getPhone(), $this->coverletterContent);
+        $this->coverletterContent = $reformat;
+
+        // Variable %PROFILE_PHONE_MOBILE%
+        $reformat = str_replace("%PROFILE_PHONE_MOBILE%", $this->getUser()->getMobilePhone(), $this->coverletterContent);
+        $this->coverletterContent = $reformat;
+
+        // Variable %PROFILE_EMAIL%
+        $reformat = str_replace("%PROFILE_EMAIL%", "<a href='mailto:{$this->getUser()->getEmailContact()}'>" . $this->getUser()->getEmailContact() . "</a>", $this->coverletterContent);
+        $this->coverletterContent = $reformat;
         return $this;
     }
 }

@@ -40,7 +40,7 @@
                     {#  TODO Essayer de trouver une solution pour la timezone #}
                     <td class="text-center">{{ company.createdDate|date('d/m/Y') }}</td>
                     <td class="text-center">{{ company.applicationnotes.count }}
-                        <a href="#">
+                        <a href="{{ path('app_application_note_new', {'idCompany': company.id}) }}">
                             <span class="iconify" data-icon="carbon:add-filled" title="Ajouter une action"></span>
                         </a>
                     </td>
@@ -59,7 +59,7 @@
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <li>
                                     <a class="dropdown-item link-warning"
-                                       href="#">Prospecter</a>
+                                       href="{{ path('app_company_application', {'idCompany': company.id}) }}">Prospecter</a>
                                 </li>
 
                                 <li>

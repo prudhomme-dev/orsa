@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Candidature - {{ name_site }}{% endblock %}
+
+{% block body %}
+    <h2 class="row justify-content-center p-2">Créer une candidature - Rendu</h2>
+    <div class="row justify-content-center">
+        <form action="" id="form" method="post">
+            <div class="row">
+                <div class="form-floating col-5">
+                    <input type="text" id="company_name"
+                           name="company_name"
+                           disabled="disabled"
+                           placeholder="Entreprise prospectée"
+                           value="{{ company.companyName }}"
+                           class="form-control"/>
+                    <label for="company_name" class="form-label required mx-2">Entreprise prospectée</label>
+                </div>
+                <div class="col-7 align-self-center text-center">
+                    <label class="form-label col-12 ">Mode de contact</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="sendMode" id="sendMode1"
+                               value="mail"
+                               required="required">
+                        <label class="form-check-label" for="sendMode1">E-Mail</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="sendMode" id="sendMode2"
+                               value="post">
+                        <label class="form-check-label" for="sendMode2">Postale (Génération PDF)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="sendMode" id="sendMode4"
+                               value="ext">
+                        <label class="form-check-label" for="sendMode4">Externe (Génération PDF)</label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-5">
+                    <label for="contact" class="form-label">Contact</label>
+                    <select id="contact" name="contact"
+                            class="form-select">
+                        <option value="">Sélectionnez un contact (optionnel)</option>
+                        {% for contact in company.contacts %}
+                            <option value="{{ contact.id }}">{{ contact.Civility.nameCivility }} {{ contact.contactFirstname }} {{ contact.contactLastname|upper }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-floating col-7 align-self-end">
+                    <input type="text" id="subjectMail"
+                           name="subjectMail"
+                           placeholder="Objet de l'E-Mail"
+                           value="Candidature spontanée"
+                           class="form-control"/>
+                    <label for="subjectMail" class="form-label required mx-2">Objet de l'E-Mail</label>
+
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-8">
+                    <label for="lettercover" class="form-label">Lettre de motivation</label>
+                    <textarea name="lettercover" class="textareamce" id="lettercover">
+                    {{ app.user.coverletterContent }}
+
+                </textarea>
+                </div>
+                <div class="col-4 align-self-end">
+                    <div class="row checkbox-row">
+                        <div class="form-check form-switch ">
+                            <input class="form-check-input" type="checkbox" role="switch" id="sendCv" name="sendCv"
+                                   checked>
+                            <label class="form-check-label" for="sendCv">Envoyer le CV</label>
+                        </div>
+                        <div class="row justify-content-center p-3">
+                            <button class="btn btn-success col-5 m-1">Valider</button>
+                            <a href="{{ path('app_candidate_viewcv') }}" target="_blank"
+                               class="btn btn-success col-5 m-1">Export
+                                PDF
+                                le CV</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+
+
+{% endblock %}

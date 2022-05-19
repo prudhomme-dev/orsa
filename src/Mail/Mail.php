@@ -29,6 +29,7 @@ class Mail
     public ?array $replyto = null;
     public ?string $dns = null;
     public ?Environment $environmentTwig = null;
+    public array $attachments = [];
 
     private function getDsn(): void
     {
@@ -59,6 +60,9 @@ class Mail
                 ->replyTo(new Address($this->replyto["address"], $this->replyto["name"]))
                 ->subject($this->subject)
                 ->html($this->contentHtml);
+        }
+        foreach ($this->attachments as $attachment) {
+            $email->attachFromPath($attachment);
         }
         try {
             $customMailer->send($email);

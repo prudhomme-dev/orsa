@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ company.companyName }} - Ajout d'une note de candidature - {{ name_site }}{% endblock %}
+
+{% block body %}
+    <h2 class="row justify-content-center p-2">Ajout d'une note de candidature - {{ company.companyName }}</h2>
+
+    {{ form_start(form) }}
+
+    <div class="row justify-content-center">
+        <div class="col-10">{{ form_row(form.Status) }}</div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-10">{{ form_row(form.messageNote) }}</div>
+    </div>
+
+    <div class="row justify-content-center">
+        <button class="btn btn-success col-1 mt-2">Valider</button>
+    </div>
+
+    <div class="row justify-content-center">
+        <a class="btn btn-success col-3 mt-2" href="{{ path('app_company_show', {"id": company.id}) }}">Retour à
+            l'entreprise</a>
+    </div>
+    {{ form_end(form) }}
+
+{% endblock %}
