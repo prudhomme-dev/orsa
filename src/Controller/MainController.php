@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DateTime\DateTimes;
 use App\Entity\City;
 use App\Entity\Civility;
 use App\Entity\Setting;
@@ -28,16 +29,16 @@ use Symfony\UX\Chartjs\Model\Chart;
 class MainController extends AbstractController
 {
     #[Route('/', name: 'app_main')]
-    public function index(ChartBuilderInterface $chartBuilder, UserRepository $userRepository): Response
+    public function index(ChartBuilderInterface $chartBuilder, UserRepository $userRepository, Request $request): Response
     {
-// TODO Revoir la gestion des toasts
         if ($this->getUser() && !$this->getUser()->isAuthorized()) {
             $this->addFlash("error", "Votre compte est bloqué ou non vérifié");
             return $this->redirectToRoute("app_logout");
         }
         if ($this->getUser() && $this->getUser()->isAuthorized()) {
             // Mise à jour de la date de dernière connexion
-            $user = $this->getUser()->setLastLoginDate(new DateTime());
+
+            $this->getUser()->setLastLoginDate(DateTimes::getDateTime());
             $userRepository->add($this->getUser(), true);
             if ($this->isGranted('CANDIDATE')) ;
             {
@@ -46,6 +47,7 @@ class MainController extends AbstractController
             }
 
         }
+        
 
         // Test graphique
         $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
@@ -92,7 +94,6 @@ class MainController extends AbstractController
     #[Route('/contactus', name: 'app_contactus', methods: ['GET', 'POST'])]
     public function contact(Request $request, MailerInterface $mailer, TranslatorInterface $translator, CivilityRepository $civilityRepository, SettingRepository $settingRepository): Response
     {
-        // TODO Mettre en forme le formulaire sur le Twig avec Bootstrap
         $form = $this->createForm(ContactUsFormType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

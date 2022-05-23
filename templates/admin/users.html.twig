@@ -9,7 +9,6 @@
         <div class="form-floating mb-3 col-4">
             <input type="search" class="form-control light-table-filter col-3" id="search" data-table="table-hover"
                    placeholder="Recherche">
-            {#            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com"> #}
             <label for="search p-1">Rechercher</label>
         </div>
 
@@ -97,6 +96,21 @@
                                            href="{{ path('app_admin_user_delete', {'idUser': userlist.id}) }}">Supprimer</a>
                                     </li>
                                 {% endif %}
+                                <li><a class="dropdown-item link-danger"
+                                       href="{{ path('app_admin_user_setadmin', {'idUser': userlist.id}) }}">
+                                        {% for role in userlist.roles %}
+                                            {% if role == "ROLE_ADMIN" %}
+                                                Passer Candidat
+
+                                            {% elseif role=="ROLE_CANDIDATE" %}
+                                                Passer admin
+
+                                            {% endif %}
+                                        {% endfor %}
+                                    </a>
+                                </li>
+
+
                             {% endif %}
                         </ul>
                     </div>

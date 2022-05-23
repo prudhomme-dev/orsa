@@ -113,4 +113,31 @@ class AdminController extends AbstractController
         $this->addFlash("success", "Utilisateur supprimé avec succès");
         return $this->redirectToRoute("app_admin_users");
     }
+
+    #[Route('users/admin/{idUser}', name: 'app_admin_user_setadmin')]
+    public function setAdmin(Request $request, UserRepository $userRepository): Response
+    {
+        $user = $userRepository->find($request->get("idUser"));
+        if (!$user) {
+            $this->addFlash("error", "Cette utilisateur n'existe pas");
+            return $this->redirectToRoute("app_admin_users");
+        }
+        if ($user === $this->getUser()) {
+            $this->addFlash("error", "Vous ne pouvez pas vous retirer vos droits admin");
+            return $this->redirectToRoute("app_admin_users");
+        }
+        $role = $user->getRoles();
+        switch ($role[0]) {
+            case "ROLE_CANDIDATE":
+                $user->setRoles(["ROLE_ADMIN"]);
+                break;
+            default:
+                $user->setRoles(["ROLE_CANDIDATE"]);
+                break;
+        }
+        $userRepository->add($user, true);
+
+        $this->addFlash("success", "Les droits de l'utilisateur ont été modifiés avec succès");
+        return $this->redirectToRoute("app_admin_users");
+    }
 }

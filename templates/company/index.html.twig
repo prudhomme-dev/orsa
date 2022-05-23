@@ -37,7 +37,6 @@
                     <td class="text-center">{{ company.city.city }} ({{ company.city.zipcode }})</td>
                     <td class="text-center">{{ company.phoneCompany }}</td>
                     <td class="text-center">{{ company.emailCompany }}</td>
-                    {#  TODO Essayer de trouver une solution pour la timezone #}
                     <td class="text-center">{{ company.createdDate|date('d/m/Y') }}</td>
                     <td class="text-center">{{ company.applicationnotes.count }}
                         <a href="{{ path('app_application_note_new', {'idCompany': company.id}) }}">

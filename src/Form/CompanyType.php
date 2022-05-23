@@ -13,7 +13,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CompanyType extends AbstractType
 {
-    // TODO Rajouter le système de code postal avec les villes
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

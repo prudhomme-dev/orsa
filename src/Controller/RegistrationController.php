@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DateTime\DateTimes;
 use App\Entity\Setting;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
@@ -38,7 +39,7 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setActive(true);
-            $user->setCreatedDate(new DateTime());
+            $user->setCreatedDate(DateTimes::getDateTime());
             $user->setRoles(["ROLE_CANDIDATE"]);
             // encode the plain password
             $user->setPassword(
@@ -92,7 +93,6 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_register');
         }
 
-        // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Votre E-Mail a bie été vérifiée');
 
         return $this->redirectToRoute('app_main');

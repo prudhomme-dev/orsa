@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DateTime\DateTimes;
 use App\Entity\ApplicationNote;
 use App\Form\ApplicationNoteType;
 use App\Repository\ApplicationNoteRepository;
@@ -52,7 +53,7 @@ class ApplicationNoteController extends AbstractController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $applicationNote->setCompany($company);
-                $applicationNote->setDate(new DateTime());
+                $applicationNote->setDate(DateTimes::getDateTime());
                 $applicationNoteRepository->add($applicationNote, true);
 
                 return $this->redirectToRoute('app_company_show', ["id" => $company->getId()], Response::HTTP_SEE_OTHER);

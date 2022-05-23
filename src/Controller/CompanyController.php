@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DateTime\DateTimes;
 use App\Entity\ApplicationNote;
 use App\Entity\Company;
 use App\Entity\Setting;
@@ -65,13 +66,13 @@ class CompanyController extends AbstractController
                 $company->setUser($this->getUser());
                 $company->setSendCv(false);
                 $company->setSendCoverletter(false);
-                $company->setCreatedDate(new DateTime());
+                $company->setCreatedDate(DateTimes::getDateTime());
                 $companyRepository->add($company, true);
 
                 $applicationnote = new ApplicationNote();
                 $applicationnote->setCompany($company);
                 $applicationnote->setStatus($statusRepository->find("1"));
-                $applicationnote->setDate(new DateTime());
+                $applicationnote->setDate(DateTimes::getDateTime());
                 $applicationnote->setMessageNote("Création de la fiche de l'entreprise");
                 $applicationNoteRepository->add($applicationnote, true);
                 dump($applicationnote);
@@ -230,7 +231,7 @@ class CompanyController extends AbstractController
         }
         if (count($company->getApplicationNotes()->toArray()) > 1) {
             $this->addFlash("error", "Vous avez déjà prospecté cette entreprise");
-            return $this->redirectToRoute("app_company_index");
+            return $this->redirectToRoute("app_company_show", ['id' => $company->getId()]);
         };
         if ($request->getMethod() === "GET") {
             return $this->render('company/application.html.twig', ["company" => $company]);
@@ -280,14 +281,13 @@ class CompanyController extends AbstractController
         // Création d'une nouvelle note de candidature
         $application = new ApplicationNote();
         $application->setCompany($company);
-        $application->setDate(new DateTime());
+        $application->setDate(DateTimes::getDateTime());
         $application->setStatus($statut);
         $application->setMessageNote($message);
 
         // Mise à jour des données dans la base de données
-        // TODO Réactiver après les tests
-//        $applicationNoteRepository->add($application, true);
-//        $companyRepository->add($company, true);
+        $applicationNoteRepository->add($application, true);
+        $companyRepository->add($company, true);
 
         switch ($request->get("sendMode")) {
             case "mail":
@@ -318,15 +318,12 @@ class CompanyController extends AbstractController
                 $this->redirectToRoute("app_company_show", ["id" => $company->getid()]);
                 break;
             default:
-                $pdf = $this->generatePDF($company->getCoverletterContent(), $company->getCompanyName());
-                // Pour test
-//                dd($pdf);
-//                return $this->render("company/application-render.html.twig", ["pdf" => $pdf]);
+                $this->generatePDF($company->getCoverletterContent(), $company->getCompanyName());
                 return new Response('', 200, ['Content-Type' => 'application/pdf']);
 
         }
-
-        return $this->redirectToRoute('app_company_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_company_show', ["id" =>
+            $company->getId()], Response::HTTP_SEE_OTHER);
     }
 
     private function generatePDF(string $content, string $companyName): Dompdf
