@@ -29,7 +29,7 @@ class Entreprises extends Fixture
             $users = $manager->getRepository(User::class)->findAll();
             $newCompany
                 ->setPhoneCompany($faker->phoneNumber())
-                ->setCreatedDate($faker->dateTimeBetween('-2 week'))
+                ->setCreatedDate($faker->dateTimeBetween('-6 week'))
                 ->setCompanyName($faker->company())
                 ->setAddress($faker->streetAddress())
                 ->setSendCv(0)
@@ -64,14 +64,29 @@ class Entreprises extends Fixture
             $applicationNote = new ApplicationNote();
             $applicationNote
                 ->setCompany($company)
-                ->setDate(DateTimes::getDateTime())
+                ->setDate($company->getCreatedDate())
                 ->setStatus($manager->getRepository(Status::class)->find(1))
                 ->setMessageNote("Création de la fiche de l'entreprise");
             $manager->persist($applicationNote);
             $manager->flush();
 
-            // TODO Création de notes de candidature
+            $ramdomNote = random_int(1, 4);
+            for ($i = 1; $i <= $ramdomNote; $i++) {
+                $applicationNote = new ApplicationNote();
+                $status = $manager->getRepository(Status::class)->findAll();
+                $randomStatus = array_rand($status);
+                while ($randomStatus === 0) {
+                    $randomStatus = array_rand($status);
+                }
 
+                $applicationNote
+                    ->setCompany($company)
+                    ->setDate($faker->dateTimeBetween($company->getCreatedDate(), "+3 week"))
+                    ->setStatus($status[$randomStatus])
+                    ->setMessageNote($faker->realTextBetween(45, 200, 2));
+                $manager->persist($applicationNote);
+            }
+            $manager->flush();
         }
 
 
