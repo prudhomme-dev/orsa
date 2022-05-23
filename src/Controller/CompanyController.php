@@ -44,7 +44,7 @@ class CompanyController extends AbstractController
     }
 
     #[Route('/new', name: 'app_company_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, CompanyRepository $companyRepository, CityRepository $cityRepository, ApplicationNoteRepository $applicationNoteRepository, StatusRepository $statusRepository): Response
+    public function new(Request $request, CompanyRepository $companyRepository, CityRepository $cityRepository, ApplicationNoteRepository $applicationNoteRepository, StatusRepository $statusRepository, SettingRepository $settingRepository): Response
     {
         if (!$this->getUser()) {
             $this->addFlash("error", "Vous devez être connecté pour ajouter une entreprise");
@@ -71,7 +71,7 @@ class CompanyController extends AbstractController
 
                 $applicationnote = new ApplicationNote();
                 $applicationnote->setCompany($company);
-                $applicationnote->setStatus($statusRepository->find("1"));
+                $applicationnote->setStatus($statusRepository->find($settingRepository->findOneBy(["keySetting" => "status_initial"])->getValue()));
                 $applicationnote->setDate(DateTimes::getDateTime());
                 $applicationnote->setMessageNote("Création de la fiche de l'entreprise");
                 $applicationNoteRepository->add($applicationnote, true);
@@ -252,7 +252,7 @@ class CompanyController extends AbstractController
         // TODO Rajouter un paramètre dans les statuts - IsDefault & IsSended
 
         // Récupération du statut
-        $statut = $statusRepository->find(2);
+        $statut = $statusRepository->find($setting = $settingRepository->findOneBy(['keySetting' => 'status_send'])->getValue());
 
         // Modification du contact contenu du CV
         $company->setCoverletterContent($request->get("lettercover"));

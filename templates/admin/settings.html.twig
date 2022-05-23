@@ -9,6 +9,30 @@
         <form action="{{ path('app_admin_settings') }}" method="post">
             <div class="card mt-3">
                 <div class="card-body">
+                    <h3 class="card-title text-center">Statuts par défaut</h3>
+
+                    {% for param in choicestatus %}
+
+                        <div class="form-floating mb-2">
+                            <select class="form-select" name="{{ param.keySetting }}" id="{{ param.keySetting }}">
+                                {% for status in statuslist %}
+                                    <option value="{{ status.id }}" {% if status.id==param.value %} selected {% endif %}>{{ status.statusName }}</option>
+                                {% endfor %}
+
+                            </select>
+                            <label for="{{ param.keySetting }}" class="form-label">{{ param.keySetting }}</label>
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
                     <h3 class="card-title text-center">Serveur SMTP</h3>
 
                     {% for param in smtp %}

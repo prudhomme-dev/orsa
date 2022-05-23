@@ -6,6 +6,7 @@ use App\Entity\Setting;
 use App\Form\AdminEditUserFormType;
 use App\Repository\CityRepository;
 use App\Repository\SettingRepository;
+use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -84,7 +85,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/settings', name: 'app_admin_settings', methods: ['GET', 'POST'])]
-    public function settings(Request $request, SettingRepository $settingRepository): Response
+    public function settings(Request $request, SettingRepository $settingRepository, StatusRepository $statusRepository): Response
     {
         $datas = $request->request->all();
         foreach ($datas as $key => $data) {
@@ -94,7 +95,9 @@ class AdminController extends AbstractController
         }
 
         $smtp = $settingRepository->findBykeyObj("SMTP");
-        return $this->render('admin/settings.html.twig', ['smtp' => $smtp]);
+        $status = $settingRepository->findBykeyObj("status");
+        $statusList = $statusRepository->findAll();
+        return $this->render('admin/settings.html.twig', ['smtp' => $smtp, "choicestatus" => $status, "statuslist" => $statusList]);
     }
 
     #[Route('users/delete/{idUser}', name: 'app_admin_user_delete')]
