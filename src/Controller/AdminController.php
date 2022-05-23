@@ -94,6 +94,10 @@ class AdminController extends AbstractController
             $settingRepository->add($setting, true);
         }
 
+        if ($request->getMethod() === "POST") {
+            $this->addFlash("success", "Les paramètres ont été enregistrées avec succès");
+        }
+
         $smtp = $settingRepository->findBykeyObj("SMTP");
         $status = $settingRepository->findBykeyObj("status");
         $statusList = $statusRepository->findAll();

@@ -248,9 +248,7 @@ class CompanyController extends AbstractController
                 return $this->render('company/application.html.twig', ["company" => $company]);
             }
         }
-
-        // TODO Rajouter un paramètre dans les statuts - IsDefault & IsSended
-
+        
         // Récupération du statut
         $statut = $statusRepository->find($setting = $settingRepository->findOneBy(['keySetting' => 'status_send'])->getValue());
 

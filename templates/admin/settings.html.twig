@@ -20,7 +20,8 @@
                                 {% endfor %}
 
                             </select>
-                            <label for="{{ param.keySetting }}" class="form-label">{{ param.keySetting }}</label>
+                            <label for="{{ param.keySetting }}"
+                                   class="form-label">{% if param.label %} {{ param.label }} {% else %}{{ param.keySetting }}{% endif %}</label>
                         </div>
 
 
@@ -42,7 +43,8 @@
                                    id="{{ param.keySetting }}" name="{{ param.keySetting }}"
                                    autocomplete="address" placeholder="Adresse" class="form-control"
                                    value="{{ param.value }}">
-                            <label for="{{ param.keySetting }}" class="form-label">{{ param.keySetting }}</label>
+                            <label for="{{ param.keySetting }}" class="form-label">
+                                {% if param.label %} {{ param.label }} {% else %}{{ param.keySetting }}{% endif %}</label>
                         </div>
 
 

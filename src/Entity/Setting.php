@@ -19,6 +19,9 @@ class Setting
     #[ORM\Column(type: 'text', nullable: true)]
     private $value;
 
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private $label;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,18 @@ class Setting
     public function setValue(?string $value): self
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    public function getLabel(): ?string
+    {
+        return $this->label;
+    }
+
+    public function setLabel(?string $label): self
+    {
+        $this->label = $label;
 
         return $this;
     }
