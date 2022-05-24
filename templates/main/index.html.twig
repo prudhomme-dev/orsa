@@ -14,13 +14,57 @@
 
 {% block body %}
     {% if is_granted("ROLE_CANDIDATE") %}
-        
+
         <div>{{ render_chart(chart) }}</div>
     {% endif %}
     {% if app.user %}
-        <p>Utilisateur connecté</p>
         {% if is_granted("ROLE_ADMIN") %}
-            <p>Administrateur Dashboard</p>
+
+            <h2 class="row justify-content-center p-2">Tableau de bord</h2>
+            <div class="row justify-content-center">
+                <div class="datas col-7">
+                    <h5>Nombre de nouveaux candidats</h5>
+
+                    <div class="c-3">
+                        <div class="data">
+                            <p class="dataTitle">
+                                Semaine dernière
+                            </p>
+                            <p class="dataInt">{{ datas["createdLastWeek"] }}</p>
+                        </div>
+                        <div class="data">
+                            <p class="dataTitle">
+                                Hier
+                            </p>
+                            <p class="dataInt">{{ datas["createdYesterday"] }}</p>
+                        </div>
+                        <div class="data">
+                            <p class="dataTitle">
+                                Aujourd'hui
+                            </p>
+                            <p class="dataInt">{{ datas["createdToday"] }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="datas col-4 align-self-center">
+                    <h5>Nombre de comptes inactifs</h5>
+
+
+                    <div class="data ">
+                        <p class="dataInt">{{ datas['inactiveAccount'] }}</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row justify-content-center mt-3">
+                <div class="col-8 m-2">
+                    {{ render_chart(chart) }}
+                </div>
+            </div>
+
         {% endif %}
 
 
