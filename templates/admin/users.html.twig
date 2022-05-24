@@ -48,7 +48,7 @@
                         {% endif %}
                     {% endfor %}
                 </td>
-                <td>{{ userlist.createdDate|date("d/m/Y H:m:i") }}</td>
+                <td>{{ userlist.createdDate|date("d/m/Y H:i:s") }}</td>
                 <td>
                     {% if userlist.active == 0 %}
                         Bloqué
@@ -62,7 +62,7 @@
                 </td>
                 <td>
                     {% if userlist.lastLoginDate %}
-                        {{ userlist.lastLoginDate|date("d/m/Y H:m:i") }}
+                        {{ userlist.lastLoginDate|date("d/m/Y H:i:s") }}
                     {% endif %}
                 </td>
                 <td>
