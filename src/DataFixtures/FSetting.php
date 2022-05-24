@@ -24,12 +24,14 @@ class FSetting extends Fixture
         $settingNew = new Setting();
         $settingNew
             ->setKeySetting("smtp_server")
+            ->setValue("localhost")
             ->setLabel("Serveur SMTP");
         $manager->persist($settingNew);
 
         $settingNew = new Setting();
         $settingNew
             ->setKeySetting("smtp_port")
+            ->setValue("1025")
             ->setLabel("Port du serveur SMTP");
         $manager->persist($settingNew);
 
@@ -48,12 +50,14 @@ class FSetting extends Fixture
         $settingNew = new Setting();
         $settingNew
             ->setKeySetting("smtp_from")
+            ->setValue("noreply@monstage.app")
             ->setLabel("Adresse E-Mail d'envoi");
         $manager->persist($settingNew);
 
         $settingNew = new Setting();
         $settingNew
             ->setKeySetting("smtp_from_name")
+            ->setValue("MonStage.App")
             ->setLabel("Nom de l'expéditeur d'envoi");
         $manager->persist($settingNew);
 

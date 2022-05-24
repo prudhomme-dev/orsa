@@ -14,7 +14,8 @@ class AZipCode extends Fixture
         ini_set('memory_limit', '1024M');
         dump(ini_get('memory_limit'));
         $zipCode = null;
-        $filejson = file_get_contents("https://datanova.laposte.fr/explore/dataset/laposte_hexasmal/download?format=json&amp;timezone=Europe/Berlin&amp;use_labels_for_header=false");
+        dump($_ENV['URL_ZIPCODE_JSON']);
+        $filejson = file_get_contents($_ENV['URL_ZIPCODE_JSON']);
         if ($filejson) {
             $zipCode = json_decode($filejson);
         }

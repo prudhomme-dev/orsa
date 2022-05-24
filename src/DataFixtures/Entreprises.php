@@ -36,6 +36,7 @@ class Entreprises extends Fixture
                 ->setSendCoverletter(0)
                 ->setAddressTwo($faker->secondaryAddress())
                 ->setEmailCompany($faker->companyEmail())
+                ->setPhoneCompany($i % 10 === 0 ? $faker->serviceNumber() : $faker->phoneNumber)
                 ->setUser($users[array_rand($users)])
                 ->setCity($cities[array_rand($cities)]);
             $manager->persist($newCompany);
@@ -46,7 +47,7 @@ class Entreprises extends Fixture
         // Ajout de contacts pour chaque entreprise et statut initial
         $companies = $manager->getRepository(Company::class)->findAll();
         foreach ($companies as $company) {
-            $random = random_int(1, 6);
+            $random = random_int(0, 6);
             for ($i = 1; $i <= $random; $i++) {
                 $civility = $manager->getRepository(Civility::class)->findAll();
                 $contact = new Contact();
@@ -57,6 +58,7 @@ class Entreprises extends Fixture
                     ->setContactLastname($faker->lastName)
                     ->setContactEmail($faker->companyEmail)
                     ->setContactFunction($faker->jobTitle)
+                    ->setContactMobilePhone($faker->mobileNumber())
                     ->setContactPhone($faker->phoneNumber);
                 $manager->persist($contact);
             }
@@ -70,7 +72,7 @@ class Entreprises extends Fixture
             $manager->persist($applicationNote);
             $manager->flush();
 
-            $ramdomNote = random_int(1, 4);
+            $ramdomNote = random_int(0, 4);
             for ($i = 1; $i <= $ramdomNote; $i++) {
                 $applicationNote = new ApplicationNote();
                 $status = $manager->getRepository(Status::class)->findAll();
