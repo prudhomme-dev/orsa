@@ -25,7 +25,7 @@ class CStatus extends Fixture
             "Candidature envoyée",
             "Candidature refusée",
             "Candidature à relancer",
-            "Entretien planifiée"];
+            "Entretien planifié"];
         foreach ($statusArray as $statusOne) {
             $statusInt = new Status();
             $statusInt->setStatusName($statusOne);
