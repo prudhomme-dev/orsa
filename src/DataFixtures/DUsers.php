@@ -18,13 +18,13 @@ class DUsers extends Fixture
 
         // Création d'utilisateur
         $adminCount = 0;
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 120; $i++) {
             $user = new User();
             if ($adminCount < 7) $roles = ["ROLE_ADMIN", "ROLE_CANDIDATE"];
             else $roles = ["ROLE_CANDIDATE"];
             $civility = $manager->getRepository(Civility::class)->findAll();
             $cities = $manager->getRepository(City::class)->findAll();
-            $dateCreated = $faker->dateTimeBetween('-20 week');
+            $dateCreated = $faker->dateTimeBetween('-45 week');
             $datelastLogin = $faker->dateTimeBetween($dateCreated, "+8 week");
             $user->setEmail($faker->email)
                 ->setRoles([$roles[array_rand($roles)]])

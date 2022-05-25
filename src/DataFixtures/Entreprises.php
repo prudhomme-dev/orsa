@@ -23,13 +23,13 @@ class Entreprises extends Fixture
         $faker = Factory::create('fr_FR');
         $manager->flush();
 
-        for ($i = 1; $i <= 250; $i++) {
+        for ($i = 1; $i <= 400; $i++) {
             $newCompany = new Company();
             $cities = $manager->getRepository(City::class)->findAll();
             $users = $manager->getRepository(User::class)->findAll();
             $newCompany
                 ->setPhoneCompany($faker->phoneNumber())
-                ->setCreatedDate($faker->dateTimeBetween('-6 week'))
+                ->setCreatedDate($faker->dateTimeBetween('-40 week'))
                 ->setCompanyName($faker->company())
                 ->setAddress($faker->streetAddress())
                 ->setSendCv(0)
@@ -83,7 +83,7 @@ class Entreprises extends Fixture
 
                 $applicationNote
                     ->setCompany($company)
-                    ->setDate($faker->dateTimeBetween($company->getCreatedDate(), "+3 week"))
+                    ->setDate($faker->dateTimeBetween($company->getCreatedDate(), "+20 week"))
                     ->setStatus($status[$randomStatus])
                     ->setMessageNote($faker->realTextBetween(45, 200, 2));
                 $manager->persist($applicationNote);
