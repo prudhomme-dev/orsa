@@ -7,6 +7,7 @@ use App\Entity\ApplicationNote;
 use App\Form\ApplicationNoteType;
 use App\Repository\ApplicationNoteRepository;
 use App\Repository\CompanyRepository;
+use App\Repository\StatusRepository;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,5 +67,58 @@ class ApplicationNoteController extends AbstractController
             ]);
         }
         return $this->redirectToRoute("app_company_index");
+    }
+
+    #[Route('/change/{idCompany}/{idStatus}', name: 'app_note_change_status', methods: ['GET'])]
+    public function changeStatus(ApplicationNoteRepository $applicationNoteRepository, CompanyRepository $companyRepository, Request $request, StatusRepository $statusRepository): Response
+    {
+
+        $response = [];
+        if (!$this->getUser()) {
+            $response['success'] = false;
+            $response['error'] = "Vous devez être connecté pour gérer les notes de candidatures";
+            return $this->json($response, 403);
+        }
+        if ($this->getUser() && !$this->getUser()->isAuthorized()) {
+            $response['success'] = false;
+            $response['error'] = "Votre compte est bloqué ou non vérifié";
+            return $this->json($response, 403);
+        }
+
+
+        if ($this->getUser() && $this->getUser()->isAuthorized()) {
+            $company = $companyRepository->find($request->get("idCompany"));
+            $status = $statusRepository->find($request->get("idStatus"));
+            if (!$company) {
+                $response['success'] = false;
+                $response['error'] = "L'entreprise n'existe pas";
+                return $this->json($response, 403);
+            }
+            if ($company->getUser() !== $this->getUser()) {
+                $response['success'] = false;
+                $response['error'] = "Action interdite";
+                return $this->json($response, 403);
+            }
+            if (!$status) {
+                $response['success'] = false;
+                $response['error'] = "Statut inexistant";
+                return $this->json($response, 403);
+            }
+
+            $note = new ApplicationNote();
+            $note->setCompany($company);
+            $note->setStatus($status);
+            $note->setDate(DateTimes::getDateTime());
+            $note->setMessageNote("Modification du statut de la candidature");
+            $applicationNoteRepository->add($note, true);
+            $response['success'] = true;
+            $this->addFlash("success", "Changement de statut effectué");
+            return $this->json($response, 200);
+
+        }
+
+        $response['success'] = false;
+        $response['error'] = "Erreur système";
+        return $this->json($response, 403);
     }
 }

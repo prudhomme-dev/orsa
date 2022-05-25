@@ -188,3 +188,43 @@ a:hover {
     font-size: 36px;
     align-items: end;
 }
+
+.kanban {
+    margin: 5px 5px;
+    padding: 5px 10px;
+}
+
+.kanban li {
+    background-color: transparent;
+    border-top: 1px var(--background-input) solid !important;
+}
+
+.kanban a {
+    color: var(--background-input);
+}
+
+.kanban a:hover {
+    color: var(--bs-primary);
+    transition: all 0.5s;
+}
+
+.kanban .dataTitle {
+    padding: 3px 5px;
+    color: white;
+    font-size: 18px;
+}
+
+.col-data {
+    width: 18.5% !important;
+    flex: 0 0 auto !important;
+}
+
+/* Drap&Drop */
+.drag-over {
+    border: dashed 3px var(--background-input);
+    border-radius: 25px;
+}
+
+.drag-hide {
+    display: none;
+}

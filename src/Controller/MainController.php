@@ -13,12 +13,13 @@ use App\Mail\Mail;
 use App\Repository\ApplicationNoteRepository;
 use App\Repository\CityRepository;
 use App\Repository\CivilityRepository;
+use App\Repository\CompanyRepository;
 use App\Repository\SettingRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use DateInterval;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use stdClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,7 @@ use Symfony\UX\Chartjs\Model\Chart;
 class MainController extends AbstractController
 {
     #[Route('/', name: 'app_main')]
-    public function index(ChartBuilderInterface $chartBuilder, UserRepository $userRepository, ApplicationNoteRepository $applicationNoteRepository, StatusRepository $statusRepository, Request $request): Response
+    public function index(ChartBuilderInterface $chartBuilder, UserRepository $userRepository, ApplicationNoteRepository $applicationNoteRepository, StatusRepository $statusRepository, CompanyRepository $companyRepository, SettingRepository $settingRepository, Request $request): Response
     {
         if ($this->getUser() && !$this->getUser()->isAuthorized()) {
             $this->addFlash("error", "Votre compte est bloqué ou non vérifié");
@@ -43,116 +44,151 @@ class MainController extends AbstractController
 
             $this->getUser()->setLastLoginDate(DateTimes::getDateTime());
             $userRepository->add($this->getUser(), true);
-            if ($this->isGranted('CANDIDATE')) ;
-            {
+            if ($this->isGranted('ROLE_CANDIDATE')) {
 
+                // Requêtes des données chiffrées
+                $status = $statusRepository->findAll();
+                $datas = [];
+                $detaildatas = [];
+                foreach ($status as $uniqueStatus) {
+                    $datas[$uniqueStatus->getStatusName()] = 0;
+                    $obj = new stdClass();
+                    $obj->id = $uniqueStatus->getId();
+                    $obj->statusName = $uniqueStatus->getStatusName();
+                    $obj->companies = null;
+                    $detaildatas[$uniqueStatus->getId()] = $obj;
+
+                }
+
+                $companies = $companyRepository->findBy(["User" => $this->getUser()]);
+                foreach ($companies as $company) {
+                    $datas[$company->getApplicationNotes()->last()->getStatus()->getStatusName()]++;
+                    $statusId = $company->getApplicationNotes()->last()->getStatus()->getId();
+                    if (isset($detaildatas[$statusId])) {
+                        $detaildatas[$statusId]->companies[] = $company;
+                    }
+
+                }
+                // Récupération du statut initial
+                $statusInit = $settingRepository->findOneBy(['keySetting' => "status_initial"]);
+                return $this->render('main/index_candidate.html.twig', ["datas" => $datas, "kanban" => $detaildatas, "initStatus" => $statusInit->getValue()]);
 
             }
 
-        }
+            if ($this->isGranted('ROLE_ADMIN')) {
+                // Requêtes des données chiffrées
+                $datas = [];
+                // Récupération des comptes inactifs
+                $inactiveDay = 30;
+                $dateNow = DateTimes::getDateTime();
+                $dateSearch = $dateNow->sub(new DateInterval("P{$inactiveDay}D"));
+                $inactiveAccount = count($userRepository->createQueryBuilder('u')
+                    ->andWhere('u.lastLoginDate < :val')
+                    ->setParameter('val', $dateSearch)
+                    ->getQuery()
+                    ->getResult());
+                $datas['inactiveAccount'] = $inactiveAccount;
 
 
-        // Requêtes des données chiffrées
-        $datas = [];
-        // Récupération des comptes inactifs
-        $inactiveDay = 30;
-        $dateNow = DateTimes::getDateTime();
-        $dateSearch = $dateNow->sub(new DateInterval("P{$inactiveDay}D"));
-        $inactiveAccount = count($userRepository->createQueryBuilder('u')
-            ->andWhere('u.lastLoginDate < :val')
-            ->setParameter('val', $dateSearch)
-            ->getQuery()
-            ->getResult());
-        $datas['inactiveAccount'] = $inactiveAccount;
+                // Récupération des nouveaux inscrits
+                $dateNow = DateTimes::getDateTime();
+                $createdToday = $userRepository->createQueryBuilder('u')
+                    ->andWhere('u.createdDate BETWEEN :start AND :end')
+                    ->setParameter('start', $dateNow->format("Y-m-d") . " 00:00:00")
+                    ->setParameter('end', $dateNow->format("Y-m-d") . " 23:59:59")
+                    ->getQuery()
+                    ->getResult();
+                $datas['createdToday'] = count($createdToday);
+
+                $yesterday = DateTimes::getDateTime()->sub(new DateInterval("P1D"));
+                $createdYesterday = $userRepository->createQueryBuilder('u')
+                    ->andWhere('u.createdDate BETWEEN :start AND :end')
+                    ->setParameter('start', $yesterday->format("Y-m-d") . " 00:00:00")
+                    ->setParameter('end', $yesterday->format("Y-m-d") . " 23:59:59")
+                    ->getQuery()
+                    ->getResult();
+                $datas['createdYesterday'] = count($createdYesterday);
+
+                $lastWeek = DateTimes::getPreviousWeek();
+                $createdLastWeek = $userRepository->createQueryBuilder('u')
+                    ->andWhere('u.createdDate BETWEEN :start AND :end')
+                    ->setParameter('start', $lastWeek["start"] . " 00:00:00")
+                    ->setParameter('end', $lastWeek["end"] . " 23:59:59")
+                    ->getQuery()
+                    ->getResult();
+                $datas['createdLastWeek'] = count($createdLastWeek);
+
+                $month = 12;
+                $arrayMonths = [];
+                $arrayDatas = [];
+                for ($i = $month; $i >= 0; $i--) {
+                    $arrayMonths[DateTimes::getDateTime()->sub((new DateInterval("P{$i}M")))->format("m/Y")] = 0;
+                }
 
 
-        // Récupération des nouveaux inscrits
-        $dateNow = DateTimes::getDateTime();
-        $createdToday = $userRepository->createQueryBuilder('u')
-            ->andWhere('u.createdDate BETWEEN :start AND :end')
-            ->setParameter('start', $dateNow->format("Y-m-d") . " 00:00:00")
-            ->setParameter('end', $dateNow->format("Y-m-d") . " 23:59:59")
-            ->getQuery()
-            ->getResult();
-        $datas['createdToday'] = count($createdToday);
+                $status = $statusRepository->findAll();
+                foreach ($status as $statusUnique) {
+                    for ($i = $month; $i >= 0; $i--) {
+                        $arrayMonths[DateTimes::getDateTime()->sub((new DateInterval("P{$i}M")))->format("m/Y")] = 0;
+                    }
+                    $dateNow = DateTimes::getDateTime();
+                    $dateSearch = $dateNow->sub(new DateInterval("P{$month}M"))->format("Y-m");
+                    $countRequest = $applicationNoteRepository->createQueryBuilder('ap')
+                        ->andWhere('ap.date BETWEEN :start AND :end AND ap.Status = :status')
+                        ->setParameter('start', $dateSearch . "-01 00:00:00")
+                        ->setParameter('end', DateTimes::getDateTime()->format("Y-m") . "-31 23:59:59")
+                        ->setParameter('status', $statusUnique)
+                        ->orderBy("ap.date", "ASC")
+                        ->getQuery()
+                        ->getResult();
+                    foreach ($countRequest as $applicationNote) {
+                        if (array_key_exists($applicationNote->getDate()->format("m/Y"), $arrayMonths)) $arrayMonths[$applicationNote->getDate()->format("m/Y")] += 1;
+                        else $arrayMonths[$applicationNote->getDate()->format("m/Y")] = 1;
+                    }
+                    $arrayDatas[$statusUnique->getStatusName()] = $arrayMonths;
+                }
 
-        $yesterday = DateTimes::getDateTime()->sub(new DateInterval("P1D"));
-        $createdYesterday = $userRepository->createQueryBuilder('u')
-            ->andWhere('u.createdDate BETWEEN :start AND :end')
-            ->setParameter('start', $yesterday->format("Y-m-d") . " 00:00:00")
-            ->setParameter('end', $yesterday->format("Y-m-d") . " 23:59:59")
-            ->getQuery()
-            ->getResult();
-        $datas['createdYesterday'] = count($createdYesterday);
+                $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
+                $datasets = [];
+                $colors = 0;
+                foreach ($arrayDatas as $key => $data) {
 
-        $lastWeek = DateTimes::getPreviousWeek();
-        $createdLastWeek = $userRepository->createQueryBuilder('u')
-            ->andWhere('u.createdDate BETWEEN :start AND :end')
-            ->setParameter('start', $lastWeek["start"] . " 00:00:00")
-            ->setParameter('end', $lastWeek["end"] . " 23:59:59")
-            ->getQuery()
-            ->getResult();
-        $datas['createdLastWeek'] = count($createdLastWeek);
-
-        $month = 12;
-        $arrayMonths = [];
-        $arrayDatas = [];
-        for ($i = $month; $i >= 0; $i--) {
-            $arrayMonths[DateTimes::getDateTime()->sub((new DateInterval("P{$i}M")))->format("m/Y")] = 0;
-        }
+                    $getColors = json_decode($_ENV['COLORS']);
+                    $color = $getColors->color[$colors] ?? "rgb(" . rand(0, 255) . ", " . rand(0, 255) . ", " . rand(0, 255) . ")";
+                    $datasets[] = [
+                        'label' => $key,
+                        'backgroundColor' => $color,
+                        'borderColor' => $color,
+                        'data' => $data
+                    ];
+                    $colors++;
+                }
+                $chart->setData([
+                    'labels' => array_keys($arrayMonths),
+                    'datasets' => $datasets
+                ]);
 
 
-        $status = $statusRepository->findAll();
-        foreach ($status as $statusUnique) {
-            for ($i = $month; $i >= 0; $i--) {
-                $arrayMonths[DateTimes::getDateTime()->sub((new DateInterval("P{$i}M")))->format("m/Y")] = 0;
+                $chart->setOptions([
+                    'scales' => [
+                        'y' => [
+                            'suggestedMin' => 0,
+                            'suggestedMax' => 100,
+                        ],
+
+                    ],
+                    'layout' => ['padding' => 10]
+                ]);
+                return $this->render('main/index_admin.html.twig', ['datas' => $datas, 'chart' => $chart
+                ]);
+
             }
-            $dateNow = DateTimes::getDateTime();
-            $dateSearch = $dateNow->sub(new DateInterval("P{$month}M"))->format("Y-m");
-            $countRequest = $applicationNoteRepository->createQueryBuilder('ap')
-                ->andWhere('ap.date BETWEEN :start AND :end AND ap.Status = :status')
-                ->setParameter('start', $dateSearch . "-01 00:00:00")
-                ->setParameter('end', DateTimes::getDateTime()->format("Y-m") . "-31 23:59:59")
-                ->setParameter('status', $statusUnique)
-                ->orderBy("ap.date", "ASC")
-                ->getQuery()
-                ->getResult();
-            foreach ($countRequest as $applicationNote) {
-                if (array_key_exists($applicationNote->getDate()->format("m/Y"), $arrayMonths)) $arrayMonths[$applicationNote->getDate()->format("m/Y")] += 1;
-                else $arrayMonths[$applicationNote->getDate()->format("m/Y")] = 1;
-            }
-            $arrayDatas[$statusUnique->getStatusName()] = $arrayMonths;
+
+
         }
-
-        $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
-        $datasets = [];
-        foreach ($arrayDatas as $key => $data) {
-            // TODO Définir des couleurs pour chaque statut
-            $color = "rgb(" . rand(0, 255) . ", " . rand(0, 255) . ", " . rand(0, 255) . ")";
-            $datasets[] = [
-                'label' => $key,
-                'backgroundColor' => $color,
-                'borderColor' => $color,
-                'data' => $data
-            ];
-        }
-        $chart->setData([
-            'labels' => array_keys($arrayMonths),
-            'datasets' => $datasets
-        ]);
+        return $this->render("main/index.html.twig");
 
 
-        $chart->setOptions([
-            'scales' => [
-                'y' => [
-                    'suggestedMin' => 0,
-                    'suggestedMax' => 100,
-                ],
-            ],
-            'layout' => ['padding' => 10]
-        ]);
-        return $this->render('main/index.html.twig', ['datas' => $datas, 'chart' => $chart
-        ]);
     }
 
     #[Route('/legal', name: 'app_legal')]
@@ -195,7 +231,6 @@ class MainController extends AbstractController
     public function initApp(CityRepository $cityRepository, EntityManagerInterface $manager, CivilityRepository $civilityRepository, StatusRepository $statusRepository, SettingRepository $settingRepository, UserRepository $userRepository, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         if (!$userRepository->findAll() || $this->isGranted("ROLE_ADMIN")) {
-            // TODO Refaire le test de l'initialisation
             ini_set("memory_limit", "2048M");
             ini_set("max_execution_time", "600");
 
@@ -271,7 +306,7 @@ class MainController extends AbstractController
                     "Candidature envoyée",
                     "Candidature refusée",
                     "Candidature à relancer",
-                    "Entretien planifiée"];
+                    "Entretien planifié"];
                 foreach ($statusArray as $statusOne) {
                     $statusInt = new Status();
                     $statusInt->setStatusName($statusOne);

@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+
+
+    {% block title %}Dashboard Candidat - {{ name_site }}{% endblock %}
+
+
+{% block body %}
+    {% if is_granted("ROLE_CANDIDATE") %}
+
+
+        <h2 class="row justify-content-center p-2">Mon Espace candidat</h2>
+        <div class="row justify-content-center">
+            <div class="datas col-12">
+                <h5>Statuts des candidatures</h5>
+
+                <div class="c-3">
+                    {% for key,data in datas %}
+                        <div class="data">
+                            <p class="dataTitle">
+                                {{ key }}
+                            </p>
+                            <p class="dataInt">{{ data }}</p>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-around mt-3">
+            {% for key, datadetails in kanban %}
+                <div class="datas kanban col-3">
+
+
+                    <div class="data">
+                        <p class="dataTitle" data-status="{{ datadetails.id }}" draggable="false">
+                            {{ datadetails.statusName }}
+                        </p>
+                        <ul class="list-group" draggable="false">
+                            {% for company in datadetails.companies %}
+                                <li class="list-group-item" draggable="false">
+                                    <p>
+                                        <a id="{{ company.id }}" class="list-link"
+                                           href="{{ path('app_company_show', {'id': company.id}) }}">{{ company.companyName }}</a>
+                                        {% if key == initStatus %}
+                                            <a href="{{ path('app_company_application', {'idCompany': company.id}) }}">
+                                            <span class="iconify" data-icon="carbon:add-filled"
+                                                  title="Créer une candidature"></span>
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ path('app_application_note_new', {'idCompany': company.id}) }}">
+                                            <span class="iconify" data-icon="carbon:add-filled"
+                                                  title="Ajouter une action"></span>
+                                            </a>
+                                        {% endif %}
+                                    </p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <script>
+        const items = document.querySelectorAll('.list-link');
+        let originStatus = 0;
+        items.forEach(item => {
+                item.addEventListener('dragstart', dragStart);
+            }
+        )
+
+        function dragStart(e) {
+            originStatus = e.target.parentElement.parentElement.parentElement.parentElement.children[0].dataset.status;
+            e.dataTransfer.setData('text/plain', e.target.id);
+        }
+
+        const boxes = document.querySelectorAll('.kanban .dataTitle');
+
+        boxes.forEach(box => {
+            box.addEventListener('dragenter', dragEnter)
+            box.addEventListener('dragover', dragOver);
+            box.addEventListener('dragleave', dragLeave);
+            box.addEventListener('drop', drop);
+        });
+
+        function dragEnter(e) {
+            e.preventDefault();
+            e.target.classList.add('drag-over');
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            e.target.classList.add('drag-over');
+        }
+
+        function dragLeave(e) {
+            e.target.classList.remove('drag-over');
+        }
+
+        function drop(e) {
+            e.target.classList.remove('drag-over');
+
+
+            // get the draggable element
+            const id = e.dataTransfer.getData('text/plain');
+            let status = e.target.dataset.status
+            // const draggable = document.getElementById(id);
+            if (status !== originStatus) changeStatus(e.target.dataset.status, id);
+
+        }
+
+        async function changeStatus(status, idCompany) {
+            if (status && idCompany) {
+                try {
+                    let response = await fetch(
+                        `${window.location.origin}/note/change/${idCompany}/${status}/`
+                    );
+                    let change = await response.json();
+                    if (change.success) {
+                        location.reload();
+                    } else {
+                        alert("Erreur");
+                    }
+
+                } catch (e) {
+                    console.error("ERREUR", e);
+                }
+            }
+        }
+    </script>
+
+{% endblock %}

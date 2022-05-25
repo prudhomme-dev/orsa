@@ -13,91 +13,33 @@
 
 
 {% block body %}
-    {% if is_granted("ROLE_CANDIDATE") %}
-
-        <div>{{ render_chart(chart) }}</div>
-    {% endif %}
-    {% if app.user %}
-        {% if is_granted("ROLE_ADMIN") %}
-
-            <h2 class="row justify-content-center p-2">Tableau de bord</h2>
-            <div class="row justify-content-center">
-                <div class="datas col-7">
-                    <h5>Nombre de nouveaux candidats</h5>
-
-                    <div class="c-3">
-                        <div class="data">
-                            <p class="dataTitle">
-                                Semaine dernière
-                            </p>
-                            <p class="dataInt">{{ datas["createdLastWeek"] }}</p>
-                        </div>
-                        <div class="data">
-                            <p class="dataTitle">
-                                Hier
-                            </p>
-                            <p class="dataInt">{{ datas["createdYesterday"] }}</p>
-                        </div>
-                        <div class="data">
-                            <p class="dataTitle">
-                                Aujourd'hui
-                            </p>
-                            <p class="dataInt">{{ datas["createdToday"] }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="datas col-4 align-self-center">
-                    <h5>Nombre de comptes inactifs</h5>
-
-
-                    <div class="data ">
-                        <p class="dataInt">{{ datas['inactiveAccount'] }}</p>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="row justify-content-center mt-3">
-                <div class="col-8 m-2">
-                    {{ render_chart(chart) }}
-                </div>
-            </div>
-
-        {% endif %}
-
-
-    {% else %}
-
-        <div class="row justify-content-around">
-            <div class="col-12 col-md-6 align-self-center">
-                <img src="{{ asset('./assets/img/accueil-img.jpg') }}" class="img-fluid title-image"
-                     alt="Bienvenue sur MonStage.APP">
-            </div>
-            <div class="col-12 col-md-6 align-self-center">
-                <h4 class="row justify-content-center p-2">La gestion de vos candidatures de stages simplifiée grâce à
-                    MonStage.App</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis commodo porta quam neque sit lorem
-                    ornare quam. Amet posuere varius vel ut. Nunc, laoreet urna a, enim augue bibendum id quis sed.
-                    Amet, non magna sollicitudin nulla. Sit tempus duis et pellentesque. Donec feugiat tincidunt et
-                    bibendum. Sem dis vestibulum fames turpis interdum. Consequat, laoreet laoreet sit nisl non netus.
-                    Lectus malesuada amet amet, laoreet ut id aenean.
-                    Pulvinar interdum semper morbi quisque eget et, quis sollicitudin venenatis. Sed et in sagittis elit
-                    pharetra dignissim morbi id. Erat tempor risus consectetur laoreet porta eu. Tempus, donec elit, sed
-                    enim, commodo amet etiam. Erat nulla mattis odio purus sed. Maecenas in cum tincidunt tempus
-                    elementum. Quam cursus et massa ornare nibh nisi, donec. Eu amet, donec quis nisl neque scelerisque
-                    pellentesque.</p>
-                <p>Quis tempus, urna tellus est, lacus tincidunt. Facilisi hendrerit in consequat vitae pharetra vitae.
-                    Faucibus semper maecenas in eget. Enim non enim aliquam id sit a amet duis integer. Non in commodo
-                    feugiat ac in.</p>
-                <div class="row justify-content-center"><a href="{{ path('app_register') }}"
-                                                           class="btn btn-success col-8">S'inscrire gratuitement</a>
-                </div>
+    
+    <div class="row justify-content-around">
+        <div class="col-12 col-md-6 align-self-center">
+            <img src="{{ asset('./assets/img/accueil-img.jpg') }}" class="img-fluid title-image"
+                 alt="Bienvenue sur MonStage.APP">
+        </div>
+        <div class="col-12 col-md-6 align-self-center">
+            <h4 class="row justify-content-center p-2">La gestion de vos candidatures de stages simplifiée grâce à
+                MonStage.App</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis commodo porta quam neque sit lorem
+                ornare quam. Amet posuere varius vel ut. Nunc, laoreet urna a, enim augue bibendum id quis sed.
+                Amet, non magna sollicitudin nulla. Sit tempus duis et pellentesque. Donec feugiat tincidunt et
+                bibendum. Sem dis vestibulum fames turpis interdum. Consequat, laoreet laoreet sit nisl non netus.
+                Lectus malesuada amet amet, laoreet ut id aenean.
+                Pulvinar interdum semper morbi quisque eget et, quis sollicitudin venenatis. Sed et in sagittis elit
+                pharetra dignissim morbi id. Erat tempor risus consectetur laoreet porta eu. Tempus, donec elit, sed
+                enim, commodo amet etiam. Erat nulla mattis odio purus sed. Maecenas in cum tincidunt tempus
+                elementum. Quam cursus et massa ornare nibh nisi, donec. Eu amet, donec quis nisl neque scelerisque
+                pellentesque.</p>
+            <p>Quis tempus, urna tellus est, lacus tincidunt. Facilisi hendrerit in consequat vitae pharetra vitae.
+                Faucibus semper maecenas in eget. Enim non enim aliquam id sit a amet duis integer. Non in commodo
+                feugiat ac in.</p>
+            <div class="row justify-content-center"><a href="{{ path('app_register') }}"
+                                                       class="btn btn-success col-8">S'inscrire gratuitement</a>
             </div>
         </div>
-    {% endif %}
-
+    </div>
 
 
 {% endblock %}
