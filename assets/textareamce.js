@@ -125,9 +125,11 @@ tinymce.PluginManager.add('variableApp', function (editor, url) {
         }
     }
 });
-
+tinymce.suffix = '.min';
 tinymce.init({
+
     selector: '.textareamce',
+    skin: 'MonStage',
     plugins: 'variableApp preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen link codesample table charmap pagebreak nonbreaking anchor advlist lists wordcount help charmap quickbars',
     editimage_cors_hosts: ['picsum.photos'],
     menubar: 'file edit view insert format tools table help',

@@ -17,3 +17,5 @@ import './textareamce';
 // Tables
 import './tables';
 
+import Iconify from '@iconify/iconify';
+

@@ -1,4 +1,4 @@
-async function getCitiesFromZipCode(zipcode, elements) {
+window.getCitiesFromZipCode = async function (zipcode, elements) {
     let selectinput = document.getElementById(elements);
     selectinput.style.display = "block";
     selectinput.options.length = 0;
@@ -23,7 +23,7 @@ async function getCitiesFromZipCode(zipcode, elements) {
     }
 }
 
-function setCity(idCity, elements) {
+window.setCity = function (idCity, elements) {
     if (idCity !== "") {
         let hiddenInput = document.getElementById(elements);
         if (hiddenInput) {
