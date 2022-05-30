@@ -5,8 +5,7 @@ namespace App\Controller;
 use App\DateTime\DateTimes;
 use App\Entity\ApplicationNote;
 use App\Entity\Company;
-use App\Entity\Setting;
-use App\Form\CompanyType;
+use App\Form\CompanyFormType;
 use App\Mail\Mail;
 use App\Repository\ApplicationNoteRepository;
 use App\Repository\CityRepository;
@@ -14,7 +13,6 @@ use App\Repository\CompanyRepository;
 use App\Repository\ContactRepository;
 use App\Repository\SettingRepository;
 use App\Repository\StatusRepository;
-use DateTime;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -57,7 +55,7 @@ class CompanyController extends AbstractController
 
         if ($this->getUser() && $this->getUser()->isAuthorized()) {
             $company = new Company();
-            $form = $this->createForm(CompanyType::class, $company);
+            $form = $this->createForm(CompanyFormType::class, $company);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
@@ -162,7 +160,7 @@ class CompanyController extends AbstractController
                 $this->addFlash("error", "Entreprise non accessible");
                 return $this->redirectToRoute("app_company_index");
             }
-            $form = $this->createForm(CompanyType::class, $company);
+            $form = $this->createForm(CompanyFormType::class, $company);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
@@ -248,7 +246,7 @@ class CompanyController extends AbstractController
                 return $this->render('company/application.html.twig', ["company" => $company]);
             }
         }
-        
+
         // Récupération du statut
         $statut = $statusRepository->find($setting = $settingRepository->findOneBy(['keySetting' => 'status_send'])->getValue());
 

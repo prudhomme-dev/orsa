@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\DateTime\DateTimes;
 use App\Entity\ApplicationNote;
-use App\Form\ApplicationNoteType;
+use App\Form\ApplicationNoteFormType;
 use App\Repository\ApplicationNoteRepository;
 use App\Repository\CompanyRepository;
 use App\Repository\StatusRepository;
@@ -49,7 +49,7 @@ class ApplicationNoteController extends AbstractController
             }
 
             $applicationNote = new ApplicationNote();
-            $form = $this->createForm(ApplicationNoteType::class, $applicationNote);
+            $form = $this->createForm(ApplicationNoteFormType::class, $applicationNote);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {

@@ -74,12 +74,24 @@ class RegistrationFormType extends AbstractType
                 'attr' => ['autocomplete' => 'firstname', 'placeholder' => 'Prénom'],
                 'row_attr' => [
                     'class' => 'form-floating',
-                ],])
+                ],
+                'constraints' => [
+                    new Length([
+                        'min' => 3,
+                        'minMessage' => "Veuillez saisir votre prénom avec au minimum {{ limit }} caractères"
+                    ])
+                ]])
             ->add('lastnameUser', TextType::class, ['label' => 'Nom',
                 'attr' => ['autocomplete' => 'lastname', 'placeholder' => 'Nom'],
                 'row_attr' => [
                     'class' => 'form-floating',
-                ],]);
+                ],
+                'constraints' => [
+                    new Length([
+                        'min' => 2,
+                        'minMessage' => "Veuillez saisir votre nom avec au minimum {{ limit }} caractères"
+                    ])
+                ]]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

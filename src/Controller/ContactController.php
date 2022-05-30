@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Contact;
-use App\Form\ContactType;
+use App\Form\ContactFormType;
 use App\Mail\Mail;
 use App\Repository\CompanyRepository;
 use App\Repository\ContactRepository;
@@ -43,7 +43,7 @@ class ContactController extends AbstractController
                 return $this->redirectToRoute("app_company_index");
             }
             $contact = new Contact();
-            $form = $this->createForm(ContactType::class, $contact);
+            $form = $this->createForm(ContactFormType::class, $contact);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
@@ -80,7 +80,7 @@ class ContactController extends AbstractController
                 $this->addFlash("error", "Impossible de modifier ce contact");
                 return $this->redirectToRoute("app_company_index");
             }
-            $form = $this->createForm(ContactType::class, $contact);
+            $form = $this->createForm(ContactFormType::class, $contact);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {

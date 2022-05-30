@@ -212,17 +212,29 @@ class MainController extends AbstractController
         $form = $this->createForm(ContactUsFormType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $setting = $settingRepository->findBykey("smtp");
-
             $civility = $civilityRepository->find($form->get('Civility')->getData());
-            if (Mail::emailTransport($setting,
-                [$setting["smtp_from"], $setting["smtp_from_name"]], "Formulaire de Contact", "", "main/contact_email.html.twig", ["form" => $form->all(), "Civility" => $civility], [$form->get("Email")->getData(), $form->get("LastName")->getData()])) {
+
+            $smtp = $settingRepository->smtpSettings();
+            $mail = new Mail();
+            $mail->smtpHost = $smtp["smtp_server"];
+            $mail->smtpPort = (int)$smtp["smtp_port"];
+            $mail->smtpUser = $smtp["smtp_user"];
+            $mail->smtpPwd = $smtp["smtp_pass"];
+            $mail->environmentTwig = $this->container->get('twig');
+            $mail->smtpFromName = $smtp["smtp_from_name"];
+            $mail->smtpFrom = $smtp["smtp_from"];
+            $mail->subject = "Formulaire de Contact";
+            $mail->template = "main/contact_email.html.twig";
+            $mail->context = ["form" => $form->all(), "Civility" => $civility];
+            $mail->to = ["address" => $smtp["smtp_from"], "name" => $smtp["smtp_from_name"]];
+            $mail->replyto = ["address" => $this->getUser() ? $this->getUser()->getEmailContact() : $form->get("Email")->getData(),
+                "name" => $this->getUser() ? "{$this->getUser()->getCivility()->getNameCivility()} {$this->getUser()->getFirstnameUser()} {$this->getUser()->getLastnameUser()}" : "{$form->get("Civility")->getData()} {$form->get("LastName")->getData()}"];
+            if ($mail->emailSend()) {
                 $this->addFlash("mail_send", "Votre message a été envoyé correctement");
                 return $this->render("main/contact-send.html.twig");
             } else {
                 $this->addFlash("mail_error", "Problème d'envoi du message");
             }
-
 
         }
 

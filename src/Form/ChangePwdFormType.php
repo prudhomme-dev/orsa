@@ -21,6 +21,9 @@ class ChangePwdFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /**
+         *  Formulaire de modification de mot de passe par le profil utilisateur
+         */
         $builder
             ->add("actualPassword", PasswordType::class, ['label' => 'Votre mot de passe actuel', 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password', 'placeholder' => 'Votre Mot de passe actuel'],

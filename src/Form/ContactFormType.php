@@ -11,8 +11,9 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 
-class ContactType extends AbstractType
+class ContactFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -22,13 +23,25 @@ class ContactType extends AbstractType
                 "required" => true,
                 'attr' => ['autocomplete' => 'firstname', 'placeholder' => 'Prénom'],
                 'row_attr' => [
-                    'class' => 'form-floating']])
+                    'class' => 'form-floating'],
+                'constraints' => [
+                    new Length([
+                        'min' => 3,
+                        'minMessage' => "Veuillez saisir le prénom du contact avec au minimum {{ limit }} caractères"
+                    ])
+                ]])
             ->add('contactLastname', TextType::class, [
                 'label' => 'Nom',
                 "required" => true,
                 'attr' => ['autocomplete' => 'lastname', 'placeholder' => 'Nom'],
                 'row_attr' => [
-                    'class' => 'form-floating']])
+                    'class' => 'form-floating'],
+                'constraints' => [
+                    new Length([
+                        'min' => 2,
+                        'minMessage' => "Veuillez saisir le nom du contact avec au minimum {{ limit }} caractères"
+                    ])
+                ]])
             ->add('contactEmail', EmailType::class, [
                 'label' => 'Adresse E-Mail',
                 "required" => false,
@@ -40,13 +53,25 @@ class ContactType extends AbstractType
                 "required" => false,
                 'attr' => ['autocomplete' => 'phone', 'placeholder' => 'Téléphone'],
                 'row_attr' => [
-                    'class' => 'form-floating']])
+                    'class' => 'form-floating'],
+                'constraints' => [
+                    new Length([
+                        'min' => 10,
+                        'minMessage' => "Veuillez saisir un N° de téléphone avec au minimum {{ limit }} caractères"
+                    ])
+                ]])
             ->add('contactMobilePhone', TextType::class, [
                 'label' => 'Téléphone Mobile',
                 "required" => false,
                 'attr' => ['autocomplete' => 'mobilephone', 'placeholder' => 'Téléphone Mobile'],
                 'row_attr' => [
-                    'class' => 'form-floating']])
+                    'class' => 'form-floating'],
+                'constraints' => [
+                    new Length([
+                        'min' => 10,
+                        'minMessage' => "Veuillez saisir un N° de téléphone avec au minimum {{ limit }} caractères"
+                    ])
+                ]])
             ->add('contactFunction', TextType::class, [
                 'label' => 'Fonction',
                 "required" => false,
@@ -56,7 +81,8 @@ class ContactType extends AbstractType
             ->add('Civility', EntityType::class, [
                 'class' => Civility::class,
                 'label' => false,
-                "required" => true]);
+                "required" => true,
+                "placeholder" => "Sélectionner une civilité"]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
