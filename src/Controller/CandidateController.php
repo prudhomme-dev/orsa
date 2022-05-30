@@ -140,7 +140,8 @@ class CandidateController extends AbstractController
                         'requestForm' => $form]);
                 }
                 $this->emailVerifier = $emailVerifier;
-                // TODO : Pb lors du click du lien de vérification - Contrôler les routes accessibles
+                $user->setEmail($newEmail);
+                $user->setIsVerified(false);
                 $smtp = $entityManager->getRepository(Setting::class)->smtpSettings();
                 $mail = new Mail();
                 $mail->smtpHost = $smtp["smtp_server"];
@@ -155,8 +156,6 @@ class CandidateController extends AbstractController
                 $mail->context = $this->emailVerifier->getContextLink("app_verify_email", $user);
                 $mail->to = ["address" => $user->getEmail(), "name" => "{$user->getFirstnameUser()} {$user->getLastnameUser()}"];
                 if ($mail->emailSend()) {
-                    $user->setIsVerified(false);
-                    $user->setEmail($newEmail);
                     $this->addFlash("success", "Veuillez confirmer votre adresse E-Mail en cliquant sur le lien du mail que vous allez recevoir dans quelques instant");
                     $userRepository->add($user, true);
                 } else {

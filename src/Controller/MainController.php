@@ -37,7 +37,6 @@ class MainController extends AbstractController
     {
         if ($this->getUser() && !$this->getUser()->isAuthorized()) {
             $this->addFlash("error", "Votre compte est bloqué ou non vérifié");
-            return $this->redirectToRoute("app_logout");
         }
         if ($this->getUser() && $this->getUser()->isAuthorized()) {
             // Mise à jour de la date de dernière connexion
@@ -122,14 +121,17 @@ class MainController extends AbstractController
                 $arrayMonths = [];
                 $arrayDatas = [];
                 for ($i = $month; $i >= 0; $i--) {
-                    $arrayMonths[DateTimes::getDateTime()->sub((new DateInterval("P{$i}M")))->format("m/Y")] = 0;
+                    $dateFirstDay = DateTimes::getDateTime();
+                    $dateFirstDay->setDate($dateFirstDay->format("Y"), $dateFirstDay->format("m"), 1);
+                    $arrayMonths[$dateFirstDay->sub((new DateInterval("P{$i}M")))->format("m/Y")] = 0;
                 }
-
 
                 $status = $statusRepository->findAll();
                 foreach ($status as $statusUnique) {
                     for ($i = $month; $i >= 0; $i--) {
-                        $arrayMonths[DateTimes::getDateTime()->sub((new DateInterval("P{$i}M")))->format("m/Y")] = 0;
+                        $dateFirstDay = DateTimes::getDateTime();
+                        $dateFirstDay->setDate($dateFirstDay->format("Y"), $dateFirstDay->format("m"), 1);
+                        $arrayMonths[$dateFirstDay->sub((new DateInterval("P{$i}M")))->format("m/Y")] = 0;
                     }
                     $dateNow = DateTimes::getDateTime();
                     $dateSearch = $dateNow->sub(new DateInterval("P{$month}M"))->format("Y-m");
