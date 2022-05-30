@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur système - {{ name_site }}{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-around">
+    <div class="col-12 col-md-6 align-self-center">
+        <img src="{{ asset('./assets/img/error-500-img.jpg') }}" class="img-fluid title-image"
+             alt="Erreur 500">
+    </div>
+
+    <div class="col-12 col-md-6 align-self-center">
+        <h4 class="row justify-content-center p-2">Erreur système - Erreur 500</h4>
+        <p class="m-3 row justify-content-center">Un problème technique empêche l'affichage de cette page.</p>
+        <div class="row justify-content-center m-2"><a href="{{ path('app_main') }}"
+                                                       class="btn btn-success col-8">Retour à l'accueil</a>
+        </div>
+
+    </div>
+{% endblock %}
