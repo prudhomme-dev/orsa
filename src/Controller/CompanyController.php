@@ -73,7 +73,6 @@ class CompanyController extends AbstractController
                 $applicationnote->setDate(DateTimes::getDateTime());
                 $applicationnote->setMessageNote("Création de la fiche de l'entreprise");
                 $applicationNoteRepository->add($applicationnote, true);
-                dump($applicationnote);
                 $this->addFlash("success", "L'entreprise a été ajoutée avec succès");
                 return $this->redirectToRoute('app_company_index', [], Response::HTTP_SEE_OTHER);
             }
@@ -246,7 +245,7 @@ class CompanyController extends AbstractController
                 return $this->render('company/application.html.twig', ["company" => $company]);
             }
         }
-
+        // TODO Contrôler si l'entreprise ou le contact sélectionné ont une adresse E-Mail
         // Récupération du statut
         $statut = $statusRepository->find($setting = $settingRepository->findOneBy(['keySetting' => 'status_send'])->getValue());
 
@@ -287,6 +286,7 @@ class CompanyController extends AbstractController
 
         switch ($request->get("sendMode")) {
             case "mail":
+
                 $smtp = $settingRepository->smtpSettings();
                 $mail = new Mail();
                 $mail->smtpHost = $smtp["smtp_server"];
@@ -297,7 +297,7 @@ class CompanyController extends AbstractController
                 $mail->smtpFrom = $smtp["smtp_from"];
                 $mail->subject = ($request->get("subjectMail"));
                 // Ajout du CV en pièce jointe
-                if ($company->isSendCv()) $mail->attachments = [$company->getUser()->getUploadedCv()];
+                if ($company->isSendCv() && $company->getUser()->getUploadedCv()) $mail->attachments = [$company->getUser()->getUploadedCv()];
                 $mail->contentHtml = $company->getCoverletterContent();
                 if ($contact && $contact->getContactEmail()) {
                     $mail->to = ["address" => $contact->getContactEmail(), "name" => $contact->getContactFirstname()];

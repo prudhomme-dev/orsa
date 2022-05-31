@@ -262,11 +262,6 @@ class MainController extends AbstractController
                 $x = 0;
 
                 for ($i = 0; $i < $sizeArray; $i++) {
-                    $x++;
-                    if ($x === 200) {
-                        dump($i + 1);
-                        $x = 0;
-                    }
                     $city = new City();
                     $city->setCity($zipCode[$i]->fields->nom_de_la_commune);
                     $city->setZipCode($zipCode[$i]->fields->code_postal);
@@ -282,7 +277,7 @@ class MainController extends AbstractController
             $civilities = $civilityRepository->findAll();
 
             if (count($civilities) === 0) {
-                $civilitiesArray = ["Madame", "Docteur", "Maître", "Professeur"];
+                $civilitiesArray = ["Monsieur", "Madame", "Docteur", "Maître", "Professeur"];
                 foreach ($civilitiesArray as $civilityArray) {
                     $civility = new Civility();
                     $civility->setNameCivility($civilityArray);

@@ -70,11 +70,21 @@
                 </div>
                 <div class="col-4 align-self-end">
                     <div class="row checkbox-row">
-                        <div class="form-check form-switch ">
-                            <input class="form-check-input" type="checkbox" role="switch" id="sendCv" name="sendCv"
-                                   checked>
-                            <label class="form-check-label" for="sendCv">Envoyer le CV</label>
-                        </div>
+                        {% if app.user.uploadedCv %}
+                            <div class="form-check form-switch ">
+                                <input class="form-check-input" type="checkbox" role="switch" id="sendCv" name="sendCv"
+                                       checked>
+                                <label class="form-check-label" for="sendCv">Envoyer le CV</label>
+                            </div>
+                        {% else %}
+                            <div class="form-check form-switch ">
+                                <input class="form-check-input" type="checkbox" role="switch" id="sendCv" name="sendCv"
+                                       disabled>
+                                <label class="form-check-label" for="sendCv">Envoyer le CV <a
+                                            href="{{ path('app_candidate_profile') }}">(Veuillez téléverser votre
+                                        CV)</a></label>
+                            </div>
+                        {% endif %}
                         <div class="row justify-content-center p-3">
                             <button class="btn btn-success col-5 m-1">Valider</button>
                             <a href="{{ path('app_candidate_viewcv') }}" target="_blank"
