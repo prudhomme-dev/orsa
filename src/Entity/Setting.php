@@ -41,13 +41,14 @@ class Setting
 
     public function getValue(): ?string
     {
-        return $this->value;
+        return $this->cryptPassSym(false)->value;
     }
 
     public function setValue(?string $value): self
     {
         $this->value = $value;
-
+        // Protection des valeurs dont la KeySetting contient "_pass"
+        $this->cryptPassSym(true);
         return $this;
     }
 
@@ -60,6 +61,25 @@ class Setting
     {
         $this->label = $label;
 
+        return $this;
+    }
+
+    /**
+     * Crypte et décrypte une chaîne de caractère
+     * @param string $data Chaîne de caractère à traiter
+     * @param bool $crypt True pour crypter / False pour décrypter
+     * @return string Chaîne de caractère de résultat
+     */
+    private function cryptPassSym(bool $crypt): self
+    {
+        if (str_contains($this->keySetting, "_pass")) {
+            // Data Crypt
+            $cypher = "aes-256-cbc-hmac-sha256";
+            $passphrase = "SettingPassword";
+            $iv = "9988776655440099";
+            if ($crypt) $this->value = openssl_encrypt($this->value, $cypher, $passphrase, 0, $iv);
+            else $this->value = openssl_decrypt($this->value, $cypher, $passphrase, 0, $iv);
+        }
         return $this;
     }
 }
