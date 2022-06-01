@@ -87,10 +87,12 @@
                         {% endif %}
                         <div class="row justify-content-center p-3">
                             <button class="btn btn-success col-5 m-1">Valider</button>
-                            <a href="{{ path('app_candidate_viewcv') }}" target="_blank"
-                               class="btn btn-success col-5 m-1">Export
-                                PDF
-                                le CV</a>
+                            {% if app.user.uploadedCv %}
+                                <a href="{{ path('app_candidate_viewcv') }}" target="_blank"
+                                   class="btn btn-success col-5 m-1">Export
+                                    PDF
+                                    le CV</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

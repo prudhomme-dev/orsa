@@ -52,6 +52,8 @@ class ApplicationNoteController extends AbstractController
             $form = $this->createForm(ApplicationNoteFormType::class, $applicationNote);
             $form->handleRequest($request);
 
+            $lastStatus = $company->getApplicationNotes()->last()->getStatus();
+
             if ($form->isSubmitted() && $form->isValid()) {
                 $applicationNote->setCompany($company);
                 $applicationNote->setDate(DateTimes::getDateTime());
@@ -63,7 +65,8 @@ class ApplicationNoteController extends AbstractController
             return $this->renderForm('application_note/new.html.twig', [
                 'application_note' => $applicationNote,
                 'form' => $form,
-                'company' => $company
+                'company' => $company,
+                'lastStatus' => $lastStatus
             ]);
         }
         return $this->redirectToRoute("app_company_index");

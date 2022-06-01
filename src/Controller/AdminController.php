@@ -104,7 +104,7 @@ class AdminController extends AbstractController
         return $this->render('admin/settings.html.twig', ['smtp' => $smtp, "choicestatus" => $status, "statuslist" => $statusList]);
     }
 
-    #[Route('users/delete/{idUser}', name: 'app_admin_user_delete')]
+    #[Route('/users/delete/{idUser}', name: 'app_admin_user_delete')]
     public function delete(Request $request, UserRepository $userRepository): Response
     {
         $user = $userRepository->find($request->get("idUser"));
@@ -121,7 +121,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute("app_admin_users");
     }
 
-    #[Route('users/admin/{idUser}', name: 'app_admin_user_setadmin')]
+    #[Route('/users/admin/{idUser}', name: 'app_admin_user_setadmin')]
     public function setAdmin(Request $request, UserRepository $userRepository): Response
     {
         $user = $userRepository->find($request->get("idUser"));

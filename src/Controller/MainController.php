@@ -202,7 +202,6 @@ class MainController extends AbstractController
     #[Route('/terms', name: 'app_terms')]
     public function terms(): Response
     {
-        // TODO Mettre en place les CGU
         return $this->render("main/terms.html.twig");
     }
 

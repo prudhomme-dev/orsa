@@ -245,7 +245,11 @@ class CompanyController extends AbstractController
                 return $this->render('company/application.html.twig', ["company" => $company]);
             }
         }
-        // TODO Contrôler si l'entreprise ou le contact sélectionné ont une adresse E-Mail
+        $contactmode = $request->get("sendMode");
+        if ((!$contact && !$company->getEmailCompany() && $contactmode === "mail") || ($contact && !$contact->getContactEmail() && !$company->getEmailCompany() && $contactmode === "mail")) {
+            $this->addFlash("error", "L'entreprise ainsi que le contact sélectionné n'ont d'adresse E-Mail enregistrée, il est impossible d'envoyer la candidature par E-Mail");
+            return $this->render('company/application.html.twig', ["company" => $company]);
+        }
         // Récupération du statut
         $statut = $statusRepository->find($setting = $settingRepository->findOneBy(['keySetting' => 'status_send'])->getValue());
 
@@ -258,7 +262,7 @@ class CompanyController extends AbstractController
 
         // Génération de la note de candidature
         $message = "Candidature envoyée par :";
-        switch ($request->get("sendMode")) {
+        switch ($contactmode) {
             case "post":
                 $message .= " Courrier";
                 break;

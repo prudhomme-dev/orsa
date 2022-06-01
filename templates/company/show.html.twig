@@ -169,8 +169,10 @@
             <a href="{{ path('app_company_exportpdf', {"id": company.id}) }}" target="_blank"
                class="col-2 btn btn-success m-2">Export
                 PDF</a>
-            <a href="{{ path('app_candidate_viewcv') }}" target="_blank" class="col-2 btn btn-success m-2">Voir le
-                CV</a>
+            {% if app.user.uploadedCv %}
+                <a href="{{ path('app_candidate_viewcv') }}" target="_blank" class="col-2 btn btn-success m-2">Voir le
+                    CV</a>
+            {% endif %}
         </div>
 
     {% endif %}
