@@ -78,7 +78,13 @@ class Setting
             $passphrase = "SettingPassword";
             $iv = "9988776655440099";
             if ($crypt) $this->value = openssl_encrypt($this->value, $cypher, $passphrase, 0, $iv);
-            else $this->value = openssl_decrypt($this->value, $cypher, $passphrase, 0, $iv);
+            else {
+                $userTemp = new Setting();
+                $userTemp->setLabel($this->label);
+                $userTemp->setValue($this->value);
+                $userTemp->value = openssl_decrypt($this->value, $cypher, $passphrase, 0, $iv);
+                return $userTemp;
+            }
         }
         return $this;
     }
