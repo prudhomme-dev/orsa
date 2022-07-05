@@ -381,7 +381,7 @@ class MainController extends AbstractController
                 $settingNew = new Setting();
                 $settingNew
                     ->setKeySetting("status_end")
-                    ->setLabel("Statut des candidatures à l'envoi de la candidature");
+                    ->setLabel("Statut des candidatures considérées comme terminées");
                 $manager->persist($settingNew);
 
 

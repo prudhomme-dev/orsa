@@ -77,7 +77,7 @@ class FSetting extends Fixture
         $settingNew = new Setting();
         $settingNew
             ->setKeySetting("status_end")
-            ->setLabel("Statut des candidatures à l'envoi de la candidature");
+            ->setLabel("Statut des candidatures considérées comme terminées");
         $manager->persist($settingNew);
 
         $manager->flush();
