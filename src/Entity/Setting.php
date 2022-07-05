@@ -74,7 +74,7 @@ class Setting
     {
         if (str_contains($this->keySetting, "_pass")) {
             // Data Crypt
-            $cypher = "aes-256-cbc-hmac-sha256";
+            $cypher = "aes-256-cbc";
             $passphrase = "SettingPassword";
             $iv = "9988776655440099";
             if ($crypt) $this->value = openssl_encrypt($this->value, $cypher, $passphrase, 0, $iv);
